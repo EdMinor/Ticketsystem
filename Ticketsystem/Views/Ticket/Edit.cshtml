@@ -1,0 +1,44 @@
+﻿@model Ticketsystem.Models.Ticket
+
+<h2>Ticket bearbeiten</h2>
+
+<form asp-action="Edit" method="post">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <input type="hidden" asp-for="Id" />
+
+
+    <div class="mb-3">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Priority" class="form-label"></label>
+        <select asp-for="Priority" class="form-select">
+            <option value="">Bitte wählen</option>
+            <option>Niedrig</option>
+            <option>Mittel</option>
+            <option>Hoch</option>
+        </select>
+        <span asp-validation-for="Priority" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Status"></label>
+        <select asp-for="Status" class="form-control">
+            <option>Offen</option>
+            <option>In Bearbeitung</option>
+            <option>Erledigt</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Speichern</button>
+    <a asp-action="Index" class="btn btn-secondary">Zurück</a>
+</form>

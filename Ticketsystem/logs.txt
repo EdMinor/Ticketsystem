@@ -1,0 +1,104 @@
+#################################################
+!!! ALLES INSTALLIEREN !!! powershell öffnen (strg + ö)
+#################################################
+dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 8.0.0
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.0
+dotnet add package Microsoft.EntityFrameworkCore.Tools --version 8.0.0
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 8.0.0
+dotnet add package Microsoft.AspNetCore.Identity.UI --version 8.0.0
+
+#################################################
+
+
+
+
+// Datenbank
+[1] Entity Framework Core installiert --VERSION 8--
+
+[2] Verbindung in appsettings.json definiert ("TicketSystemDatenbankVerbindung")
+	"ConnectionStrings": {
+        "TicketSystemDatenbankVerbindung": "Data Source=ticketsystem.db"
+
+[3] AppDbContext.cs unter /Models erstellt und konfiguriert
+	public class AppDbContext : IdentityDbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options) { }
+
+        public DbSet<Ticket> Tickets { get; set; }
+    }
+
+[4] Ticket.cs in /Models/ erstellt (Title, Description, Status, Priority, etc.)
+
+[5] DbContext in Program.cs registriert (UseSqlite)
+    // Datenbank-Verbindung 
+            builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("TicketSystemDatenbankVerbindung")));
+
+
+
+// Identity-System
+[1] AspNetCore.Identity --Version 8-- installiert
+
+[2] in Program.cs Identity aktiviert
+    // Identity 
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+[3] in Program.cs UseAuthentication() aktiviert
+    // UseAuthentication() aktiviert... REIHENFOLGE WICHTIG!!!
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
+
+// Migration
+[1] Erste Migration erstellen (InitialCreate)
+    dotnet ef migrations add InitialCreate
+!!!Vorher alles abspeichern oder Projektmappe NEU ERSTELLEN und mit "cd Ticketsystem" in Unterordner(projektordner) gehen
+
+[2] Datenbank generieren
+    dotnet ef database update
+
+
+
+// AccountController mit Register, Logion
+[1] AccountController.cs in /Controllers/ erstellen
+
+[2] RegisterModel.cs unter /Models/ erstellen
+[3] Register.cshtml unter /Views/Account/ erstellen
+
+[4] LoginModel.cs unter /Models/ erstellen
+[5] Logion.cshtml unter /Views/Account erstellen
+    
+
+
+// Beim Start DEFAULT Admin und User Rolle automatisch vergeben
+[1] DbInit.cs in /Models/ erstellen
+Rolle   Benutzer    Passwort
+Admin	admin@demo.de	Admin123!
+User	user@demo.de	User123!
+User    mo@demo.de  mo123!
+User	eduard@demo.de	eduard123!	
+User	suat@demo.de	suat123!	
+User	ahmad@demo.de	ahmad123!	
+
+[2] in Program.cs Main-Methode anpassen
+    public static async Task Main(string[] args)  // <- async!
+
+[3] in Program.cs  vor app.Run(); einfügen
+    using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    await Ticketsystem.Models.DbInit.SeedRolesAndUsersAsync(userManager, roleManager);
+}
+
+
+
+// Ticket CRUD Feature #3
+[1] TicketController in /Controllers/ erstellen
+
+[2] Create, Read(Index.cshtml), Update(Edit.cshtml), Delete in Views/Ticket/... erstellen

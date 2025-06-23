@@ -1,0 +1,19 @@
+﻿@model Ticketsystem.Models.Ticket
+
+<h2>Ticket löschen</h2>
+
+<div class="mb-3">
+    <strong>Titel:</strong> @Model.Title
+</div>
+<div class="mb-3">
+    <strong>Beschreibung:</strong> @Model.Description
+</div>
+<div class="mb-3">
+    <strong>Status:</strong> @Model.Status
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Ja, löschen</button>
+    <a asp-action="Index" class="btn btn-secondary">Abbrechen</a>
+</form>

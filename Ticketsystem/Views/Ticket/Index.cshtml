@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Ticketsystem.Models.Ticket>
+
+<h2>Meine Tickets</h2>
+
+<a asp-action="Create">+ Neues Ticket</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Titel</th>
+            <th>Status</th>
+            <th>Erstellt</th>
+            <th>Aktion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.Title</td>
+                <td>@ticket.Status</td>
+                <td>@ticket.CreatedAt.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@ticket.Id">✏️</a>
+                    <a asp-action="Delete" asp-route-id="@ticket.Id">🗑</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
