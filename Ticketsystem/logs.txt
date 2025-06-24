@@ -80,10 +80,10 @@ dotnet add package Microsoft.AspNetCore.Identity.UI --version 8.0.0
 Rolle   Benutzer    Passwort
 Admin	admin@demo.de	Admin123!
 User	user@demo.de	User123!
-User    mo@demo.de  mo123!
-User	eduard@demo.de	eduard123!	
-User	suat@demo.de	suat123!	
-User	ahmad@demo.de	ahmad123!	
+User    mo@demo.de  Mo123!
+User	eduard@demo.de	Eduard123!	
+User	suat@demo.de	Suat123!	
+User	ahmad@demo.de	Ahmad123!	
 
 [2] in Program.cs Main-Methode anpassen
     public static async Task Main(string[] args)  // <- async!

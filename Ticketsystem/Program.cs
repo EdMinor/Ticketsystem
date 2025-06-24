@@ -54,10 +54,10 @@ namespace Ticketsystem
             /* Für Default Admin/User
              * admin@demo.de admin123!
              * user@demo.de user123!
-                User    mo@demo.de  mo123!
-                User	eduard@demo.de	eduard123!	
-                User	suat@demo.de	suat123!	
-                User	ahmad@demo.de	ahmad123!	
+                User    mo@demo.de  Mo123!
+                User	eduard@demo.de	Eduard123!	
+                User	suat@demo.de	Suat123!	
+                User	ahmad@demo.de	Ahmad123!	
              */
             using (var scope = app.Services.CreateScope())
             {
