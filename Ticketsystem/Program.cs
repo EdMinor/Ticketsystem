@@ -23,6 +23,11 @@ namespace Ticketsystem
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Account/AccessDenied";
+});
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -51,7 +56,7 @@ namespace Ticketsystem
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
-            /* Für Default Admin/User
+            /* Fï¿½r Default Admin/User
              * admin@demo.de admin123!
              * user@demo.de user123!
                 User    mo@demo.de  Mo123!
@@ -63,9 +68,14 @@ namespace Ticketsystem
             {
                 var services = scope.ServiceProvider;
                 var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-                RoleManager<IdentityRole> roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var context = services.GetRequiredService<AppDbContext>();
+
+                // DB automatisch migrieren (erstellt DB und Tabellen wenn nicht vorhanden)
+                await context.Database.MigrateAsync();
 
                 await DbInit.SeedRolesAndUsersAsync(userManager, roleManager);
+                await DbInit.SeedTicketsAsync(context, userManager);
             }
 
             app.Run();

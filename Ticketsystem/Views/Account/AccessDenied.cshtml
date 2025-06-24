@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Zugriff verweigert";
+}
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    <p class="text-danger">Sie haben keine Berechtigung, auf diese Seite zuzugreifen.</p>
+    <p>
+        <a asp-action="Index" asp-controller="Home">Zurück zur Startseite</a>
+    </p>
+</header> 

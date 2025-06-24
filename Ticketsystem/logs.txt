@@ -1,5 +1,5 @@
 #################################################
-!!! ALLES INSTALLIEREN !!! powershell �ffnen (strg + �)
+!!! ALLES INSTALLIEREN !!! powershell �ffnen (strg + �)
 #################################################
 
 dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 8.0.0
@@ -88,7 +88,7 @@ User	ahmad@demo.de	Ahmad123!
 [2] in Program.cs Main-Methode anpassen
     public static async Task Main(string[] args)  // <- async!
 
-[3] in Program.cs  vor app.Run(); einf�gen
+[3] in Program.cs  vor app.Run(); einf�gen
     using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -103,3 +103,16 @@ User	ahmad@demo.de	Ahmad123!
 [1] TicketController in /Controllers/ erstellen
 
 [2] Create, Read(Index.cshtml), Update(Edit.cshtml), Delete in Views/Ticket/... erstellen
+
+
+#################################################
+# Änderungen von EdMin - 25.06.2024
+#################################################
+
+- Admin-Panel hinzugefügt, das nur für Benutzer mit der Rolle "Admin" sichtbar ist.
+- Das Panel zeigt alle Tickets an, gruppiert nach Priorität (Hoch, Mittel, Niedrig).
+- Sortierfunktion für Tickets nach Datum, Status und Benutzername hinzugefügt.
+- Die Datenbank wird jetzt beim Start automatisch mit Test-Benutzern und einer großen Anzahl von zufälligen Tickets gefüllt.
+- Im Admin-Panel wird nun der Benutzername des Ticketerstellers anstelle der ID angezeigt.
+- Eine "Zugriff verweigert"-Seite wurde für Benutzer hinzugefügt, die versuchen, auf geschützte Bereiche zuzugreifen.
+- Die Datenbank wird beim Anwendungsstart automatisch erstellt und migriert, um Fehler bei der Initialisierung zu vermeiden.

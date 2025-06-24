@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace Ticketsystem.Models
 {
@@ -21,6 +22,8 @@ namespace Ticketsystem.Models
         public string? Category { get; set; } = null;
 
         public string? CreatorId { get; set; } = null;
+
+        public virtual IdentityUser? Creator { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
