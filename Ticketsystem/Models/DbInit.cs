@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
+
 namespace Ticketsystem.Models
 {
     public static class DbInit
@@ -39,7 +40,7 @@ namespace Ticketsystem.Models
             if (await userManager.FindByEmailAsync(userMoEmail) == null)
             {
                 var userMo = new IdentityUser { UserName = userMoEmail, Email = userMoEmail };
-                var result = await userManager.CreateAsync(userMo, "mo123!");
+                var result = await userManager.CreateAsync(userMo, "Mo123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(userMo, "User");
             }
@@ -48,7 +49,7 @@ namespace Ticketsystem.Models
             if (await userManager.FindByEmailAsync(userEduardEmail) == null)
             {
                 var userEduard = new IdentityUser { UserName = userEduardEmail, Email = userEduardEmail };
-                var result = await userManager.CreateAsync(userEduard, "eduard123!");
+                var result = await userManager.CreateAsync(userEduard, "Eduard123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(userEduard, "User");
             }
@@ -58,7 +59,7 @@ namespace Ticketsystem.Models
             if (await userManager.FindByEmailAsync(userSuatEmail) == null)
             {
                 var userSuat = new IdentityUser { UserName = userSuatEmail, Email = userSuatEmail };
-                var result = await userManager.CreateAsync(userSuat, "suat123!");
+                var result = await userManager.CreateAsync(userSuat, "Suat123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(userSuat, "User");
             }
@@ -68,7 +69,7 @@ namespace Ticketsystem.Models
             if (await userManager.FindByEmailAsync(userAhmadEmail) == null)
             {
                 var userAhmad = new IdentityUser { UserName = userAhmadEmail, Email = userAhmadEmail };
-                var result = await userManager.CreateAsync(userAhmad, "ahmad123!");
+                var result = await userManager.CreateAsync(userAhmad, "Ahmad123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(userAhmad, "User");
             }

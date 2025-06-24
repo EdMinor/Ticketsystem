@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 using Ticketsystem.Models;
 
 namespace Ticketsystem
@@ -14,6 +15,8 @@ namespace Ticketsystem
             // Datenbank-Verbindung 
             builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("TicketSystemDatenbankVerbindung")));
+
+
 
             // Identity 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -60,12 +63,14 @@ namespace Ticketsystem
             {
                 var services = scope.ServiceProvider;
                 var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                await Ticketsystem.Models.DbInit.SeedRolesAndUsersAsync(userManager, roleManager);
-                
-                
-                app.Run();
+                RoleManager<IdentityRole> roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                await DbInit.SeedRolesAndUsersAsync(userManager, roleManager);
             }
+
+            app.Run();
         }
+
     }
+    
 }
