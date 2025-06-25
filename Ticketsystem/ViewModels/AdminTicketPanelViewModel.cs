@@ -5,8 +5,10 @@ namespace Ticketsystem.ViewModels
 {
     public class AdminTicketPanelViewModel
     {
-        public Dictionary<string, List<Ticket>> GroupedTickets { get; set; } = new();
-        public string SortOrder { get; set; } = "date";
-        public string SortDirection { get; set; } = "desc";
+        public int OpenTicketsCount { get; set; }
+        public int InProgressTicketsCount { get; set; }
+        public int ClosedTicketsCount { get; set; }
+        public List<string> UserNames { get; set; } = new();
+        public int OverdueTicketsCount { get; set; }
     }
 } 

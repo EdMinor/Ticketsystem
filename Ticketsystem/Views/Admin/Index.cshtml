@@ -2,51 +2,72 @@
 
 @{
     ViewData["Title"] = "Admin-Panel";
-    string GetSortDirection(string order) => Model.SortOrder == order && Model.SortDirection == "asc" ? "desc" : "asc";
 }
 
-<h2>Admin-Panel: Alle Tickets</h2>
+<h2>@ViewData["Title"]</h2>
 
-<div class="mb-3">
-    <span>Sortieren nach: </span>
-    <a asp-action="Index" asp-route-sortOrder="date" asp-route-sortDirection="@GetSortDirection("date")">Datum</a> |
-    <a asp-action="Index" asp-route-sortOrder="status" asp-route-sortDirection="@GetSortDirection("status")">Status</a> |
-    <a asp-action="Index" asp-route-sortOrder="user" asp-route-sortDirection="@GetSortDirection("user")">Benutzer</a>
-</div>
-
-@foreach (var group in Model.GroupedTickets.OrderByDescending(g => g.Key == "Hoch").ThenByDescending(g => g.Key == "Mittel").ThenByDescending(g => g.Key == "Niedrig").ThenBy(g => g.Key))
-{
-    <div class="mb-5">
-        <h3>Priorität: @group.Key</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Titel</th>
-                    <th>Beschreibung</th>
-                    <th>Status</th>
-                    <th>Priorität</th>
-                    <th>Erstellt am</th>
-                    <th>Erstellt von</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in group.Value)
-            {
-                <tr>
-                    <td>@item.Title</td>
-                    <td>@item.Description</td>
-                    <td>@item.Status</td>
-                    <td>@item.Priority</td>
-                    <td>@item.CreatedAt</td>
-                    <td>@item.Creator?.UserName</td>
-                    <td>
-                        <a asp-controller="Ticket" asp-action="Edit" asp-route-id="@item.Id">Bearbeiten</a> |
-                        <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@item.Id">Löschen</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+<div class="row">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Ticket-Status</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Offen: @Model.OpenTicketsCount</p>
+                <p class="card-text">In Bearbeitung: @Model.InProgressTicketsCount</p>
+                <p class="card-text">Geschlossen: @Model.ClosedTicketsCount</p>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Admin" asp-action="Tickets" class="btn btn-primary">Alle Tickets</a>
+            </div>
+        </div>
     </div>
-} 
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Developer</h5>
+            </div>
+            <div class="card-body">
+                
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-primary">Details anzeigen</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Benutzer (@Model.UserNames.Count)</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    @foreach(var userName in Model.UserNames.Take(5))
+                    {
+                        <li>@userName</li>
+                    }
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-primary">Benutzer verwalten</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100 text-white bg-danger">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Überfällige Tickets</h5>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">@Model.OverdueTicketsCount</h3>
+                <p class="card-text">Offen seit mehr als 3 Tagen</p>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Admin" asp-action="Tickets" asp-route-overdue="true" class="btn btn-light">Anzeigen</a>
+            </div>
+        </div>
+    </div>
+</div> 

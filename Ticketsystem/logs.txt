@@ -116,3 +116,14 @@ User	ahmad@demo.de	Ahmad123!
 - Im Admin-Panel wird nun der Benutzername des Ticketerstellers anstelle der ID angezeigt.
 - Eine "Zugriff verweigert"-Seite wurde für Benutzer hinzugefügt, die versuchen, auf geschützte Bereiche zuzugreifen.
 - Die Datenbank wird beim Anwendungsstart automatisch erstellt und migriert, um Fehler bei der Initialisierung zu vermeiden.
+
+#################################################
+# Änderungen von EdMin - 27.06.2024
+#################################################
+
+- Neues Admin-Dashboard: Vier Statistikblöcke (Ticket-Status, Developer, Benutzer, Überfällige Tickets) auf der Hauptseite der Admin-Panel.
+- Überfällige Tickets: Klick auf "Anzeigen" im Block öffnet eine gefilterte Ansicht aller offenen Tickets älter als 3 Tage, gruppiert nach Priorität.
+- Neue Seite /Admin/Tickets: Zeigt alle Tickets gruppiert nach Priorität (Hoch, Mittel, Niedrig) oder – bei Filter – nur überfällige Tickets.
+- Neue ViewModel AdminTicketsByPriorityViewModel für Gruppierung nach Priorität.
+- AdminController: Tickets-Action mit optionalem overdue-Parameter für Filterung.
+- Tickets.cshtml: Dynamischer Titel und Anzeige je nach Filter.

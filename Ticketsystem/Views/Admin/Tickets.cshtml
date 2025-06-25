@@ -1,0 +1,56 @@
+@model Ticketsystem.ViewModels.AdminTicketsByPriorityViewModel
+
+@{
+    bool isOverdue = false;
+    if (Context.Request.Query.ContainsKey("overdue") && Context.Request.Query["overdue"] == "true")
+    {
+        isOverdue = true;
+    }
+    ViewData["Title"] = isOverdue ? "Überfällige Tickets (offen > 3 Tage)" : "Alle Tickets nach Priorität";
+    var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    @foreach (var priority in priorities)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Priorität: @priority</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.GroupedTickets.ContainsKey(priority) && Model.GroupedTickets[priority].Any())
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Titel</th>
+                                    <th>Status</th>
+                                    <th>Erstellt am</th>
+                                    <th>Erstellt von</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var ticket in Model.GroupedTickets[priority])
+                            {
+                                <tr>
+                                    <td>@ticket.Title</td>
+                                    <td>@ticket.Status</td>
+                                    <td>@ticket.CreatedAt.ToString("dd.MM.yyyy")</td>
+                                    <td>@ticket.Creator?.UserName</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Keine Tickets mit dieser Priorität.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div> 
