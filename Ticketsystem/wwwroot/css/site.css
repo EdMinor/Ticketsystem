@@ -20,3 +20,31 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Zeilenumbruch in Tabellenzellen sicherstellen */
+.table td, .table th {
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Farben für Kartenköpfe nach Priorität */
+.card-header-priority-hoch {
+  background-color: #dc3545 !important; /* Rot für hohe Priorität */
+  color: #fff !important;
+}
+.card-header-priority-mittel {
+  background-color: #ffc107 !important; /* Gelb für mittlere Priorität */
+  color: #212529 !important;
+}
+.card-header-priority-niedrig {
+  background-color: #28a745 !important; /* Grün für niedrige Priorität */
+  color: #fff !important;
+}
+
+/* Stile für .table-priority-... entfernen */
+.table-priority-hoch thead th,
+.table-priority-mittel thead th,
+.table-priority-niedrig thead th {
+  background-color: inherit;
+  color: inherit;
+}

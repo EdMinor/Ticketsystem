@@ -19,7 +19,7 @@ namespace Ticketsystem
 
 
             // Identity 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
@@ -67,7 +67,7 @@ builder.Services.ConfigureApplicationCookie(options =>
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 var context = services.GetRequiredService<AppDbContext>();
 

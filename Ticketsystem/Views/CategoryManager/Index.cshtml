@@ -1,0 +1,30 @@
+@model IEnumerable<string>
+@{
+    ViewData["Title"] = "Kategorien verwalten";
+}
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-controller="Ticket" asp-action="Create" class="btn btn-primary">Neue Kategorie erstellen (durch Ticket)</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var name in Model)
+    {
+        <tr>
+            <td>@name</td>
+            <td>
+                <a asp-action="Edit" asp-route-name="@name" class="btn btn-sm btn-warning">Bearbeiten</a>
+                <a asp-action="Delete" asp-route-name="@name" class="btn btn-sm btn-danger">Löschen</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table> 

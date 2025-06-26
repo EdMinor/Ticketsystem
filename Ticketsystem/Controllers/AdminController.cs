@@ -7,6 +7,7 @@ using System.Linq;
 using Ticketsystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 
 namespace Ticketsystem.Controllers
 {
@@ -14,9 +15,9 @@ namespace Ticketsystem.Controllers
     public class AdminController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminController(AppDbContext context, UserManager<IdentityUser> userManager)
+        public AdminController(AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -26,6 +27,7 @@ namespace Ticketsystem.Controllers
         {
             var tickets = await _context.Tickets.ToListAsync();
             var users = await _userManager.Users.ToListAsync();
+            ViewBag.CategoryCount = await _context.Categories.CountAsync();
 
             var model = new AdminTicketPanelViewModel
             {
@@ -39,16 +41,63 @@ namespace Ticketsystem.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Tickets(bool overdue = false)
+        public async Task<IActionResult> Tickets(bool overdue = false, string status = null)
         {
             var tickets = await _context.Tickets.Include(t => t.Creator).ToListAsync();
+            if (!string.IsNullOrEmpty(status))
+            {
+                tickets = tickets.Where(t => t.Status == status).ToList();
+            }
             if (overdue)
             {
                 tickets = tickets.Where(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3)).ToList();
             }
+            var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
             var grouped = tickets
                 .GroupBy(t => t.Priority ?? "Unbekannt")
-                .ToDictionary(g => g.Key, g => g.ToList());
+                .ToDictionary(g => g.Key, g =>
+                {
+                    string sortField = Request.Query[$"sortField_{g.Key}"].ToString();
+                    string sortOrder = Request.Query[$"sortOrder_{g.Key}"].ToString();
+                    if (string.IsNullOrEmpty(sortField)) sortField = "date";
+                    if (string.IsNullOrEmpty(sortOrder)) sortOrder = "desc";
+                    IEnumerable<Ticket> sorted = g;
+                    switch (sortField)
+                    {
+                        case "name":
+                            sorted = sortOrder == "asc" ? g.OrderBy(t => t.Creator?.UserName) : g.OrderByDescending(t => t.Creator?.UserName);
+                            break;
+                        case "status":
+                            sorted = sortOrder == "asc" ? g.OrderBy(t => t.Status) : g.OrderByDescending(t => t.Status);
+                            break;
+                        case "date":
+                        default:
+                            sorted = sortOrder == "asc" ? g.OrderBy(t => t.CreatedAt) : g.OrderByDescending(t => t.CreatedAt);
+                            break;
+                    }
+                    return sorted.ToList();
+                });
+
+            foreach (var p in priorities)
+            {
+                var sortFieldVal = Request.Query[$"sortField_{p}"].ToString();
+                var sortOrderVal = Request.Query[$"sortOrder_{p}"].ToString();
+                switch (p)
+                {
+                    case "Hoch":
+                        ViewBag.SortField_Hoch = string.IsNullOrEmpty(sortFieldVal) ? "date" : sortFieldVal;
+                        ViewBag.SortOrder_Hoch = string.IsNullOrEmpty(sortOrderVal) ? "desc" : sortOrderVal;
+                        break;
+                    case "Mittel":
+                        ViewBag.SortField_Mittel = string.IsNullOrEmpty(sortFieldVal) ? "date" : sortFieldVal;
+                        ViewBag.SortOrder_Mittel = string.IsNullOrEmpty(sortOrderVal) ? "desc" : sortOrderVal;
+                        break;
+                    case "Niedrig":
+                        ViewBag.SortField_Niedrig = string.IsNullOrEmpty(sortFieldVal) ? "date" : sortFieldVal;
+                        ViewBag.SortOrder_Niedrig = string.IsNullOrEmpty(sortOrderVal) ? "desc" : sortOrderVal;
+                        break;
+                }
+            }
 
             var model = new AdminTicketsByPriorityViewModel
             {

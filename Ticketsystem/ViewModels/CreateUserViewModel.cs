@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace Ticketsystem.Models
+namespace Ticketsystem.ViewModels
 {
-    public class RegisterModel
+    public class CreateUserViewModel
     {
         [Required]
         [EmailAddress]
@@ -12,13 +13,16 @@ namespace Ticketsystem.Models
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
 
-        [Required]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Passwörter stimmen nicht überein.")]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        public string Role { get; set; } = string.Empty;
+        public IEnumerable<string> Roles { get; set; } = new List<string>();
 
         [Required]
         [Display(Name = "Full Name")]
         public string FullName { get; set; } = string.Empty;
     }
-}
+} 

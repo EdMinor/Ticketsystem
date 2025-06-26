@@ -23,7 +23,7 @@ namespace Ticketsystem.Models
 
         public string? CreatorId { get; set; } = null;
 
-        public virtual IdentityUser? Creator { get; set; }
+        public virtual ApplicationUser? Creator { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

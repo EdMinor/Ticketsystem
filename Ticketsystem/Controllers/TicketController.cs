@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Ticketsystem.Models;
 
 namespace Ticketsystem.Controllers
@@ -28,8 +29,9 @@ namespace Ticketsystem.Controllers
             return View(tickets);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "Name", "Name");
             return View();
         }
 
@@ -56,6 +58,7 @@ namespace Ticketsystem.Controllers
             if (ticket.CreatorId != userId && !User.IsInRole("Admin"))
                 return Forbid();
 
+            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "Name", "Name", ticket.Category);
             return View(ticket);
         }
 

@@ -1,0 +1,14 @@
+@model string
+@{
+    ViewData["Title"] = "Kategorie löschen";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>Möchten Sie die Kategorie "@Model" wirklich löschen?</h3>
+<p>Alle Tickets mit dieser Kategorie werden zur Kategorie "Allgemein" verschoben.</p>
+<div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" name="name" value="@Model" />
+        <button type="submit" class="btn btn-danger">Löschen bestätigen</button>
+        <a asp-action="Index" class="btn btn-secondary">Abbrechen</a>
+    </form>
+</div> 

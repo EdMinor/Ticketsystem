@@ -13,9 +13,15 @@
                 <h5 class="card-title mb-0">Ticket-Status</h5>
             </div>
             <div class="card-body">
-                <p class="card-text">Offen: @Model.OpenTicketsCount</p>
-                <p class="card-text">In Bearbeitung: @Model.InProgressTicketsCount</p>
-                <p class="card-text">Geschlossen: @Model.ClosedTicketsCount</p>
+                <p class="card-text">
+                    <a asp-controller="Admin" asp-action="Tickets" asp-route-status="Offen">Offen: @Model.OpenTicketsCount</a>
+                </p>
+                <p class="card-text">
+                    <a asp-controller="Admin" asp-action="Tickets" asp-route-status="In Bearbeitung">In Bearbeitung: @Model.InProgressTicketsCount</a>
+                </p>
+                <p class="card-text">
+                    <a asp-controller="Admin" asp-action="Tickets" asp-route-status="Geschlossen">Geschlossen: @Model.ClosedTicketsCount</a>
+                </p>
             </div>
             <div class="card-footer">
                 <a asp-controller="Admin" asp-action="Tickets" class="btn btn-primary">Alle Tickets</a>
@@ -51,7 +57,21 @@
                 </ul>
             </div>
             <div class="card-footer">
-                <a href="#" class="btn btn-primary">Benutzer verwalten</a>
+                <a asp-controller="UserManagement" asp-action="Index" class="btn btn-primary">Benutzer verwalten</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Kategorien</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Anzahl: @ViewBag.CategoryCount</p>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Verwalten</a>
             </div>
         </div>
     </div>

@@ -5,10 +5,10 @@ namespace Ticketsystem.Models
 {
     public static class DbInit
     {
-        public static async Task SeedRolesAndUsersAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedRolesAndUsersAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             // Rollen anlegen
-            string[] roles = { "Admin", "User" };
+            string[] roles = { "Admin", "User", "Developer" };
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
@@ -19,7 +19,7 @@ namespace Ticketsystem.Models
             var adminEmail = "admin@demo.de";
             if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
-                var admin = new IdentityUser { UserName = adminEmail, Email = adminEmail };
+                var admin = new ApplicationUser { UserName = adminEmail, Email = adminEmail };
                 var result = await userManager.CreateAsync(admin, "Admin123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(admin, "Admin");
@@ -29,7 +29,7 @@ namespace Ticketsystem.Models
             var userEmail = "user@demo.de";
             if (await userManager.FindByEmailAsync(userEmail) == null)
             {
-                var user = new IdentityUser { UserName = userEmail, Email = userEmail };
+                var user = new ApplicationUser { UserName = userEmail, Email = userEmail };
                 var result = await userManager.CreateAsync(user, "User123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(user, "User");
@@ -39,7 +39,7 @@ namespace Ticketsystem.Models
             var userMoEmail = "mo@demo.de";
             if (await userManager.FindByEmailAsync(userMoEmail) == null)
             {
-                var userMo = new IdentityUser { UserName = userMoEmail, Email = userMoEmail };
+                var userMo = new ApplicationUser { UserName = userMoEmail, Email = userMoEmail };
                 var result = await userManager.CreateAsync(userMo, "Mo123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(userMo, "User");
@@ -48,7 +48,7 @@ namespace Ticketsystem.Models
             var userEduardEmail = "eduard@demo.de";
             if (await userManager.FindByEmailAsync(userEduardEmail) == null)
             {
-                var userEduard = new IdentityUser { UserName = userEduardEmail, Email = userEduardEmail };
+                var userEduard = new ApplicationUser { UserName = userEduardEmail, Email = userEduardEmail };
                 var result = await userManager.CreateAsync(userEduard, "Eduard123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(userEduard, "User");
@@ -58,7 +58,7 @@ namespace Ticketsystem.Models
             var userSuatEmail = "suat@demo.de";
             if (await userManager.FindByEmailAsync(userSuatEmail) == null)
             {
-                var userSuat = new IdentityUser { UserName = userSuatEmail, Email = userSuatEmail };
+                var userSuat = new ApplicationUser { UserName = userSuatEmail, Email = userSuatEmail };
                 var result = await userManager.CreateAsync(userSuat, "Suat123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(userSuat, "User");
@@ -68,14 +68,14 @@ namespace Ticketsystem.Models
             var userAhmadEmail = "ahmad@demo.de";
             if (await userManager.FindByEmailAsync(userAhmadEmail) == null)
             {
-                var userAhmad = new IdentityUser { UserName = userAhmadEmail, Email = userAhmadEmail };
+                var userAhmad = new ApplicationUser { UserName = userAhmadEmail, Email = userAhmadEmail };
                 var result = await userManager.CreateAsync(userAhmad, "Ahmad123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(userAhmad, "User");
             }
         }
 
-        public static async Task SeedTicketsAsync(AppDbContext context, UserManager<IdentityUser> userManager)
+        public static async Task SeedTicketsAsync(AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             // Beenden, wenn schon Tickets da sind
             if (context.Tickets.Any())

@@ -118,7 +118,7 @@ User	ahmad@demo.de	Ahmad123!
 - Die Datenbank wird beim Anwendungsstart automatisch erstellt und migriert, um Fehler bei der Initialisierung zu vermeiden.
 
 #################################################
-# Änderungen von EdMin - 27.06.2024
+# Änderungen von EdMin - 25.06.2024
 #################################################
 
 - Neues Admin-Dashboard: Vier Statistikblöcke (Ticket-Status, Developer, Benutzer, Überfällige Tickets) auf der Hauptseite der Admin-Panel.
@@ -127,3 +127,20 @@ User	ahmad@demo.de	Ahmad123!
 - Neue ViewModel AdminTicketsByPriorityViewModel für Gruppierung nach Priorität.
 - AdminController: Tickets-Action mit optionalem overdue-Parameter für Filterung.
 - Tickets.cshtml: Dynamischer Titel und Anzeige je nach Filter.
+
+#################################################
+# Änderungen von EdMin - 26.06.2024
+#################################################
+
+- Die Klasse ApplicationUser wurde erweitert (Eigenschaft FullName hinzugefügt)
+- Überall IdentityUser durch ApplicationUser ersetzt (Controller, DbContext, DI)
+- Alle Navigationseigenschaften und Beziehungen auf ApplicationUser angepasst
+- Das Feld FullName wurde zur Benutzerregistrierung hinzugefügt (RegisterModel, Register.cshtml, AccountController)
+- Das Feld FullName wurde beim Erstellen und Bearbeiten von Benutzern im Adminbereich hinzugefügt (CreateUserViewModel, EditUserViewModel, UserManagementController, Views)
+- In der Benutzertabelle im Adminbereich wird jetzt FullName angezeigt
+- Alle Migrationen wurden korrigiert, die Datenbank wurde mit den neuen Anforderungen neu erstellt
+- Die Möglichkeit, Benutzer zu löschen, wurde entfernt
+- Die Rolle Developer wurde hinzugefügt und die Rollenverwaltung für Admins ermöglicht
+- Refactoring von DI und Services zur Unterstützung von ApplicationUser
+- Alle Fehler im Zusammenhang mit UserManager/SignInManager-Typen wurden behoben
+- Alle Fehler im Zusammenhang mit Migrationen und Modellen wurden behoben
