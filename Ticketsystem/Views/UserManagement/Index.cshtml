@@ -38,7 +38,7 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
+                    @(string.IsNullOrWhiteSpace(item.FullName) ? item.UserName : item.FullName)
                 </td>
                 <td>
                     @string.Join(", ", item.Roles)

@@ -74,6 +74,7 @@ builder.Services.ConfigureApplicationCookie(options =>
                 // DB automatisch migrieren (erstellt DB und Tabellen wenn nicht vorhanden)
                 await context.Database.MigrateAsync();
 
+                await DbInit.SeedCategoriesAsync(context);
                 await DbInit.SeedRolesAndUsersAsync(userManager, roleManager);
                 await DbInit.SeedTicketsAsync(context, userManager);
             }

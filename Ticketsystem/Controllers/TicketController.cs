@@ -11,9 +11,9 @@ namespace Ticketsystem.Controllers
     public class TicketController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TicketController(AppDbContext context, UserManager<IdentityUser> userManager)
+        public TicketController(AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;

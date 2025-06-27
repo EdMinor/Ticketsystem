@@ -110,5 +110,20 @@ namespace Ticketsystem.Models
             }
             await context.SaveChangesAsync();
         }
+
+        public static async Task SeedCategoriesAsync(AppDbContext context)
+        {
+            if (!context.Categories.Any())
+            {
+                var categories = new List<Category>
+                {
+                    new Category { Name = "Verwaltung" },
+                    new Category { Name = "Schulungsräume" },
+                    new Category { Name = "Sonstiges" }
+                };
+                context.Categories.AddRange(categories);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

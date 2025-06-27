@@ -52,11 +52,7 @@
                                 <td>@ticket.Title</td>
                                 <td>@ticket.Status</td>
                                 <td>@ticket.CreatedAt.ToString("dd.MM.yyyy")</td>
-                                <td>@if (ticket.Creator?.FullName == null) {
-                                    @ticket.Creator?.UserName
-                                } else {
-                                    @ticket.Creator?.FullName
-                                }</td>
+                                <td>@(string.IsNullOrWhiteSpace(ticket.Creator?.FullName) ? ticket.Creator?.UserName : ticket.Creator?.FullName)</td>
                                 <td>Developer NAME</td>
                             </tr>
                         }
