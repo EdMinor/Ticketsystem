@@ -36,7 +36,11 @@ namespace Ticketsystem.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
                 if (roles.Contains("Developer"))
                 {
-                    developerUsers.Add(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName);
+                    var name = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName;
+                    if (name != null)
+                    {
+                        developerUsers.Add(name);
+                    }
                 }
             }
 
@@ -53,17 +57,19 @@ namespace Ticketsystem.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Tickets(bool overdue = false, string status = null)
+        public async Task<IActionResult> Tickets(bool overdue = false, string? status = null)
         {
-            var tickets = await _context.Tickets.Include(t => t.Creator).ToListAsync();
+            var ticketsQuery = _context.Tickets.Include(t => t.Creator).AsQueryable();
+
             if (!string.IsNullOrEmpty(status))
             {
-                tickets = tickets.Where(t => t.Status == status).ToList();
+                ticketsQuery = ticketsQuery.Where(t => t.Status == status);
             }
             if (overdue)
             {
-                tickets = tickets.Where(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3)).ToList();
+                ticketsQuery = ticketsQuery.Where(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3));
             }
+            var tickets = await ticketsQuery.ToListAsync();
             var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
             var grouped = tickets
                 .GroupBy(t => t.Priority ?? "Unbekannt")

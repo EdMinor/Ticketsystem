@@ -46,7 +46,7 @@ namespace Ticketsystem.Controllers
             var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
             var model = new CreateUserViewModel
             {
-                Roles = roles.Where(r => r != null).ToList<string>()
+                Roles = roles.OfType<string>().ToList()
             };
             return View(model);
         }
@@ -74,7 +74,7 @@ namespace Ticketsystem.Controllers
                 }
             }
             var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
-            model.Roles = roles.Where(r => r != null).ToList<string>();
+            model.Roles = roles.OfType<string>().ToList();
             return View(model);
         }
 

@@ -7,9 +7,9 @@ namespace Ticketsystem.Models
         public int Id { get; set; }
 
         [Required]
-        public string Titel { get; set; }
+        public string Titel { get; set; } = string.Empty;
 
-        public string Beschreibung { get; set; }
+        public string Beschreibung { get; set; } = string.Empty;
 
         [DataType(DataType.Date)]
         public DateTime Startdatum { get; set; }
