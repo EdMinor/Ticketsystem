@@ -35,7 +35,16 @@
                 <h5 class="card-title mb-0">Developer</h5>
             </div>
             <div class="card-body">
-                
+                <ul class="list-unstyled">
+                    @foreach(var dev in Model.DeveloperUsers)
+                    {
+                        <li>@dev</li>
+                    }
+                    @if (!Model.DeveloperUsers.Any())
+                    {
+                        <li><em>Keine Developer gefunden</em></li>
+                    }
+                </ul>
             </div>
             <div class="card-footer">
                 <a href="#" class="btn btn-primary">Details anzeigen</a>

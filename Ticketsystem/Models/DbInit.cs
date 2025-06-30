@@ -85,6 +85,8 @@ namespace Ticketsystem.Models
 
             var users = userManager.Users.ToList();
             var random = new Random();
+            var generalCategory = context.Categories.FirstOrDefault(c => c.Titel == "Sonstiges");
+            var generalCategoryId = generalCategory?.Id;
 
             var ticketTitles = new List<string> { "Drucker funktioniert nicht", "Passwort zurücksetzen", "Software-Installation anfordern", "Netzwerkproblem", "Monitor defekt", "Maus reagiert nicht", "Anwendungsfehler", "Zugriffsrechte benötigt", "Neuer Account für Mitarbeiter", "Server nicht erreichbar" };
             var statuses = new[] { "Offen", "In Bearbeitung", "Geschlossen" };
@@ -101,7 +103,7 @@ namespace Ticketsystem.Models
                         Description = "Dies ist eine automatisch generierte Beschreibung für das Ticket.",
                         Status = statuses[random.Next(statuses.Length)],
                         Priority = priorities[random.Next(priorities.Length)],
-                        Category = "Allgemein",
+                        CategoryId = generalCategoryId,
                         CreatorId = user.Id,
                         CreatedAt = DateTime.Now.AddDays(-random.Next(0, 15)) // Datum der letzten 14 Tage
                     };
@@ -117,9 +119,9 @@ namespace Ticketsystem.Models
             {
                 var categories = new List<Category>
                 {
-                    new Category { Name = "Verwaltung" },
-                    new Category { Name = "Schulungsräume" },
-                    new Category { Name = "Sonstiges" }
+                    new Category { Titel = "Verwaltung", Beschreibung = "Verwaltungsprojekte", Startdatum = DateTime.Now },
+                    new Category { Titel = "Schulungsräume", Beschreibung = "Schulungsräume", Startdatum = DateTime.Now },
+                    new Category { Titel = "Sonstiges", Beschreibung = "Sonstiges", Startdatum = DateTime.Now }
                 };
                 context.Categories.AddRange(categories);
                 await context.SaveChangesAsync();

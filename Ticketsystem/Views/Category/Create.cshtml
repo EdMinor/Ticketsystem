@@ -13,9 +13,24 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Titel" class="control-label"></label>
+                <input asp-for="Titel" class="form-control" />
+                <span asp-validation-for="Titel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Beschreibung" class="control-label"></label>
+                <textarea asp-for="Beschreibung" class="form-control"></textarea>
+                <span asp-validation-for="Beschreibung" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Startdatum" class="control-label"></label>
+                <input asp-for="Startdatum" type="date" class="form-control" />
+                <span asp-validation-for="Startdatum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Enddatum" class="control-label"></label>
+                <input asp-for="Enddatum" type="date" class="form-control" />
+                <span asp-validation-for="Enddatum" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Erstellen" class="btn btn-primary" />

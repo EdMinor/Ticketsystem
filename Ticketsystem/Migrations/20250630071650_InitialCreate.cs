@@ -57,7 +57,10 @@ namespace Ticketsystem.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
+                    Titel = table.Column<string>(type: "TEXT", nullable: false),
+                    Beschreibung = table.Column<string>(type: "TEXT", nullable: false),
+                    Startdatum = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Enddatum = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -180,7 +183,8 @@ namespace Ticketsystem.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Status = table.Column<string>(type: "TEXT", nullable: false),
                     Priority = table.Column<string>(type: "TEXT", nullable: false),
-                    Category = table.Column<string>(type: "TEXT", nullable: true),
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: true),
+                    DeveloperId = table.Column<string>(type: "TEXT", nullable: true),
                     CreatorId = table.Column<string>(type: "TEXT", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -191,6 +195,16 @@ namespace Ticketsystem.Migrations
                         name: "FK_Tickets_AspNetUsers_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tickets_AspNetUsers_DeveloperId",
+                        column: x => x.DeveloperId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tickets_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
                         principalColumn: "Id");
                 });
 
@@ -232,9 +246,19 @@ namespace Ticketsystem.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tickets_CategoryId",
+                table: "Tickets",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tickets_CreatorId",
                 table: "Tickets",
                 column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_DeveloperId",
+                table: "Tickets",
+                column: "DeveloperId");
         }
 
         /// <inheritdoc />
@@ -256,9 +280,6 @@ namespace Ticketsystem.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
                 name: "Tickets");
 
             migrationBuilder.DropTable(
@@ -266,6 +287,9 @@ namespace Ticketsystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Ticketsystem.Models.Ticket>
 
-<h2>Meine Tickets</h2>
+<h2>Meine Tickets (@Model.Count())</h2>
 
 <a asp-action="Create">+ Neues Ticket</a>
 
@@ -9,8 +9,14 @@
         <tr>
             <th>Titel</th>
             <th>Status</th>
+            <th>Ersteller</th>
             <th>Erstellt</th>
-            <th>Aktion</th>
+            <th>Kategorie</th>  
+            <th>Entwickler</th>
+            @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+            {
+                <th>Aktion</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -19,11 +25,17 @@
             <tr>
                 <td>@ticket.Title</td>
                 <td>@ticket.Status</td>
+                <td>@ticket.Creator?.FullName</td>
                 <td>@ticket.CreatedAt.ToShortDateString()</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@ticket.Id">✏️</a>
-                    <a asp-action="Delete" asp-route-id="@ticket.Id">🗑</a>
-                </td>
+                <td>@ticket.Category?.Titel</td>
+                <td>@ticket.Developer?.FullName</td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@ticket.Id">✏️</a>
+                        <a asp-action="Delete" asp-route-id="@ticket.Id">🗑</a>
+                    </td>
+                }
             </tr>
         }
     </tbody>

@@ -219,9 +219,18 @@ namespace Ticketsystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Beschreibung")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("Enddatum")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Startdatum")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Titel")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -235,8 +244,8 @@ namespace Ticketsystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -246,6 +255,9 @@ namespace Ticketsystem.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeveloperId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Priority")
@@ -262,7 +274,11 @@ namespace Ticketsystem.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("CreatorId");
+
+                    b.HasIndex("DeveloperId");
 
                     b.ToTable("Tickets");
                 });
@@ -320,11 +336,23 @@ namespace Ticketsystem.Migrations
 
             modelBuilder.Entity("Ticketsystem.Models.Ticket", b =>
                 {
+                    b.HasOne("Ticketsystem.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
                     b.HasOne("Ticketsystem.Models.ApplicationUser", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId");
 
+                    b.HasOne("Ticketsystem.Models.ApplicationUser", "Developer")
+                        .WithMany()
+                        .HasForeignKey("DeveloperId");
+
+                    b.Navigation("Category");
+
                     b.Navigation("Creator");
+
+                    b.Navigation("Developer");
                 });
 #pragma warning restore 612, 618
         }

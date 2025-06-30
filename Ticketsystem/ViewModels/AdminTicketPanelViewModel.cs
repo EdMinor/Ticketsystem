@@ -10,5 +10,6 @@ namespace Ticketsystem.ViewModels
         public int ClosedTicketsCount { get; set; }
         public List<string> UserNames { get; set; } = new();
         public int OverdueTicketsCount { get; set; }
+        public List<string> DeveloperUsers { get; set; } = new();
     }
 } 

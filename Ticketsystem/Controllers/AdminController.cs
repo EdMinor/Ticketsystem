@@ -29,13 +29,25 @@ namespace Ticketsystem.Controllers
             var users = await _userManager.Users.ToListAsync();
             ViewBag.CategoryCount = await _context.Categories.CountAsync();
 
+            // Получить пользователей с ролью Developer
+            var developerUsers = new List<string>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Developer"))
+                {
+                    developerUsers.Add(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName);
+                }
+            }
+
             var model = new AdminTicketPanelViewModel
             {
                 OpenTicketsCount = tickets.Count(t => t.Status == "Offen"),
                 InProgressTicketsCount = tickets.Count(t => t.Status == "In Bearbeitung"),
                 ClosedTicketsCount = tickets.Count(t => t.Status == "Geschlossen"),
                 OverdueTicketsCount = tickets.Count(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3)),
-                UserNames = users.Select(u => u.UserName).OfType<string>().ToList()
+                UserNames = users.Select(u => u.UserName).OfType<string>().ToList(),
+                DeveloperUsers = developerUsers
             };
 
             return View(model);

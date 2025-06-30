@@ -21,10 +21,14 @@ namespace Ticketsystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var userId = _userManager.GetUserId(User);
-            var tickets = await _context.Tickets
-                .Where(t => t.CreatorId == userId || User.IsInRole("Admin"))
-                .ToListAsync();
+            //var userId = _userManager.GetUserId(User);
+            var tickets = await _context.Tickets.ToListAsync();
+            foreach (var t in tickets)
+            {
+                Console.WriteLine($"{t.Id}: {t.Title} - {t.CreatorId}");
+            }
+            //   .Where(t => t.CreatorId == userId || User.IsInRole("Admin"))
+            //    .ToListAsync();
 
             return View(tickets);
         }

@@ -19,7 +19,11 @@ namespace Ticketsystem.Models
         [Required]
         public string? Priority { get; set; } = null;
 
-        public string? Category { get; set; } = null;
+        public int? CategoryId { get; set; }
+        public virtual Category? Category { get; set; }
+
+        public string? DeveloperId { get; set; } = null;
+        public virtual ApplicationUser? Developer { get; set; }
 
         public string? CreatorId { get; set; } = null;
 
