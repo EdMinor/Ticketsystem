@@ -86,8 +86,8 @@ namespace Ticketsystem.Controllers
             else
             {
                 ViewData["IsAdminView"] = false;
-                var userTickets = await ticketsQuery.Where(t => t.CreatorId == userId).ToListAsync();
-                return View(userTickets);
+                var allTicketsForUser = await ticketsQuery.ToListAsync();
+                return View(allTicketsForUser);
             }
         }
 

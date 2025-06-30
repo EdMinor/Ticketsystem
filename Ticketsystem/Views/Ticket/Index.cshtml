@@ -1,4 +1,6 @@
 ﻿@model dynamic
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     bool isAdminView = ViewData["IsAdminView"] as bool? ?? false;
@@ -107,8 +109,15 @@ else
                         <td>@ticket.CreatedAt.ToShortDateString()</td>
                         <td>@ticket.Category?.Titel</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@ticket.Id">✏️</a>
-                            <a asp-action="Delete" asp-route-id="@ticket.Id">🗑</a>
+                            @if(User.IsInRole("Admin") || ticket.CreatorId == UserManager.GetUserId(User))
+                            {
+                                <a asp-action="Edit" asp-route-id="@ticket.Id">✏️</a>
+                                <a asp-action="Delete" asp-route-id="@ticket.Id">🗑</a>
+                            }
+                            else
+                            {
+                                <span>---</span>
+                            }
                         </td>
                     </tr>
                 }
