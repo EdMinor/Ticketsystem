@@ -1,156 +1,65 @@
-﻿@model dynamic
+﻿@model Ticketsystem.ViewModels.AdminTicketsByPriorityViewModel
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    bool isAdminView = ViewData["IsAdminView"] as bool? ?? false;
     ViewData["Title"] = "Tickets";
+    var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
 }
 
 <a asp-action="Create" class="btn btn-primary mb-3">+ Neues Ticket</a>
 
-@if (isAdminView)
+@foreach (var priority in priorities)
 {
-    var adminModel = Model as Ticketsystem.ViewModels.AdminTicketsByPriorityViewModel;
-    bool isOverdue = false;
-    if (Context.Request.Query.ContainsKey("overdue") && Context.Request.Query["overdue"] == "true")
-    {
-        isOverdue = true;
-    }
-    <h2>@(isOverdue ? "Überfällige Tickets (offen > 3 Tage)" : "Alle Tickets nach Priorität")</h2>
-    <div class="mb-3">
-        <span>Filter: </span>
-        <a href="?status=Offen@(isOverdue ? "&overdue=true" : "")" class="btn btn-outline-primary btn-sm @(Context.Request.Query["status"] == "Offen" ? "fw-bold" : "")">Offen</a>
-        <a href="?status=In%20Bearbeitung@(isOverdue ? "&overdue=true" : "")" class="btn btn-outline-warning btn-sm @(Context.Request.Query["status"] == "In Bearbeitung" ? "fw-bold" : "")">In Bearbeitung</a>
-        <a href="?status=Geschlossen@(isOverdue ? "&overdue=true" : "")" class="btn btn-outline-success btn-sm @(Context.Request.Query["status"] == "Geschlossen" ? "fw-bold" : "")">Geschlossen</a>
-        <a href="?@(isOverdue ? "overdue=true" : "")" class="btn btn-outline-secondary btn-sm @(string.IsNullOrEmpty(Context.Request.Query["status"]) ? "fw-bold" : "")">Alle</a>
-    </div>
-
-    var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
-    @foreach (var priority in priorities)
-    {
-        <div class="mb-4">
-            <div class="card h-100">
-                <div class="card-header @(priority == "Hoch" ? "card-header-priority-hoch" : priority == "Mittel" ? "card-header-priority-mittel" : "card-header-priority-niedrig")">
-                    <h5 class="card-title mb-0">Priorität: @priority</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <span>Sortieren nach: </span>
-                        <a href="?sortField_@priority=date&sortOrder_@priority=@((GetSortField(priority) == "date" && GetSortOrder(priority) == "asc") ? "desc" : "asc")@(isOverdue ? "&overdue=true" : "")@GetOtherSortParams(priorities, priority)" class="btn btn-link btn-sm @(GetSortField(priority) == "date" ? "fw-bold" : "")">Datum</a>
-                        <a href="?sortField_@priority=name&sortOrder_@priority=@((GetSortField(priority) == "name" && GetSortOrder(priority) == "asc") ? "desc" : "asc")@(isOverdue ? "&overdue=true" : "")@GetOtherSortParams(priorities, priority)" class="btn btn-link btn-sm @(GetSortField(priority) == "name" ? "fw-bold" : "")">Name</a>
-                        <a href="?sortField_@priority=status&sortOrder_@priority=@((GetSortField(priority) == "status" && GetSortOrder(priority) == "asc") ? "desc" : "asc")@(isOverdue ? "&overdue=true" : "")@GetOtherSortParams(priorities, priority)" class="btn btn-link btn-sm @(GetSortField(priority) == "status" ? "fw-bold" : "")">Status</a>
-                    </div>
-                    @if (adminModel != null && adminModel.GroupedTickets.ContainsKey(priority) && adminModel.GroupedTickets[priority].Any())
-                    {
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Titel</th>
-                                    <th>Status</th>
-                                    <th>Erstellt am</th>
-                                    <th>Erstellt von</th>
-                                    <th>Kategorie</th>
-                                    <th>Aktionen</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var ticket in adminModel.GroupedTickets[priority])
-                                {
-                                    <tr>
-                                        <td>@ticket.Title</td>
-                                        <td>@ticket.Status</td>
-                                        <td>@ticket.CreatedAt.ToString("dd.MM.yyyy")</td>
-                                        <td>@(string.IsNullOrWhiteSpace(ticket.Creator?.FullName) ? ticket.Creator?.UserName : ticket.Creator?.FullName)</td>
-                                        <td>@ticket.Category?.Titel</td>
-                                        <td>
-                                            <a asp-action="Edit" asp-route-id="@ticket.Id">✏️</a>
-                                            <a asp-action="Delete" asp-route-id="@ticket.Id">🗑</a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p>Keine Tickets mit dieser Priorität.</p>
-                    }
-                </div>
+    <div class="mb-4">
+        <div class="card h-100">
+            <div class="card-header @(priority == "Hoch" ? "card-header-priority-hoch" : priority == "Mittel" ? "card-header-priority-mittel" : "card-header-priority-niedrig")">
+                <h5 class="card-title mb-0">Priorität: @priority</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.GroupedTickets.ContainsKey(priority) && Model.GroupedTickets[priority].Any())
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Titel</th>
+                                <th>Status</th>
+                                <th>Erstellt am</th>
+                                <th>Erstellt von</th>
+                                <th>Kategorie</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var ticket in Model.GroupedTickets[priority])
+                        {
+                            <tr>
+                                <td><a asp-action="Details" asp-route-id="@ticket.Id">@ticket.Title</a></td>
+                                <td>@ticket.Status</td>
+                                <td>@ticket.CreatedAt.ToString("dd.MM.yyyy")</td>
+                                <td>@(string.IsNullOrWhiteSpace(ticket.Creator?.FullName) ? ticket.Creator?.UserName : ticket.Creator?.FullName)</td>
+                                <td>@ticket.Category?.Titel</td>
+                                <td>
+                                    @if (User.IsInRole("Admin") || ticket.CreatorId == UserManager.GetUserId(User))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@ticket.Id" title="Bearbeiten">✏️</a>
+                                        <a asp-action="Delete" asp-route-id="@ticket.Id" title="Löschen">🗑</a>
+                                    }
+                                    else
+                                    {
+                                        <span>---</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>Keine Tickets mit dieser Priorität.</p>
+                }
             </div>
         </div>
-    }
-}
-else
-{
-    var userTickets = Model as IEnumerable<Ticketsystem.Models.Ticket>;
-    <h2>Meine Tickets (@(userTickets?.Count() ?? 0))</h2>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Titel</th>
-                <th>Status</th>
-                <th>Priorität</th>
-                <th>Erstellt</th>
-                <th>Kategorie</th>
-                <th>Aktionen</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (userTickets != null)
-            {
-                @foreach (var ticket in userTickets)
-                {
-                    <tr>
-                        <td>@ticket.Title</td>
-                        <td>@ticket.Status</td>
-                        <td>@ticket.Priority</td>
-                        <td>@ticket.CreatedAt.ToShortDateString()</td>
-                        <td>@ticket.Category?.Titel</td>
-                        <td>
-                            @if(User.IsInRole("Admin") || ticket.CreatorId == UserManager.GetUserId(User))
-                            {
-                                <a asp-action="Edit" asp-route-id="@ticket.Id">✏️</a>
-                                <a asp-action="Delete" asp-route-id="@ticket.Id">🗑</a>
-                            }
-                            else
-                            {
-                                <span>---</span>
-                            }
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
-}
-
-@functions {
-    private string GetOtherSortParams(string[] priorities, string currentPriority)
-    {
-        var query = Context.Request.Query;
-        var result = "";
-        foreach (var p in priorities)
-        {
-            if (p != currentPriority)
-            {
-                if (!string.IsNullOrEmpty(query[$"sortField_{p}"]))
-                    result += $"&sortField_{p}={query[$"sortField_{p}"]}";
-                if (!string.IsNullOrEmpty(query[$"sortOrder_{p}"]))
-                    result += $"&sortOrder_{p}={query[$"sortOrder_{p}"]}";
-            }
-        }
-        return result;
-    }
-
-    private string GetSortField(string priority)
-    {
-        return ViewData[$"SortField_{priority}"] as string ?? "date";
-    }
-
-    private string GetSortOrder(string priority)
-    {
-        return ViewData[$"SortOrder_{priority}"] as string ?? "desc";
-    }
+    </div>
 }

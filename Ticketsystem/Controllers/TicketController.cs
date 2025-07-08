@@ -24,71 +24,27 @@ namespace Ticketsystem.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(bool overdue = false, string? status = null)
+        public async Task<IActionResult> Index(string? status = null, bool overdue = false)
         {
-            var userId = _userManager.GetUserId(User);
             IQueryable<Ticket> ticketsQuery = _context.Tickets.Include(t => t.Creator).Include(t => t.Category);
 
-            if (User.IsInRole("Admin"))
+            if (!string.IsNullOrEmpty(status))
+                ticketsQuery = ticketsQuery.Where(t => t.Status == status);
+
+            if (overdue)
+                ticketsQuery = ticketsQuery.Where(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3));
+
+            var tickets = await ticketsQuery.ToListAsync();
+            var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
+            var grouped = tickets
+                .GroupBy(t => t.Priority ?? "Unbekannt")
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var viewModel = new AdminTicketsByPriorityViewModel
             {
-                ViewData["IsAdminView"] = true;
-
-                if (!string.IsNullOrEmpty(status))
-                {
-                    ticketsQuery = ticketsQuery.Where(t => t.Status == status);
-                }
-                if (overdue)
-                {
-                    ticketsQuery = ticketsQuery.Where(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3));
-                }
-
-                var tickets = await ticketsQuery.ToListAsync();
-                var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
-                var grouped = tickets
-                    .GroupBy(t => t.Priority ?? "Unbekannt")
-                    .ToDictionary(g => g.Key, g =>
-                    {
-                        string sortField = Request.Query[$"sortField_{g.Key}"].ToString();
-                        string sortOrder = Request.Query[$"sortOrder_{g.Key}"].ToString();
-                        if (string.IsNullOrEmpty(sortField)) sortField = "date";
-                        if (string.IsNullOrEmpty(sortOrder)) sortOrder = "desc";
-                        IEnumerable<Ticket> sorted = g;
-                        switch (sortField)
-                        {
-                            case "name":
-                                sorted = sortOrder == "asc" ? g.OrderBy(t => t.Creator?.UserName) : g.OrderByDescending(t => t.Creator?.UserName);
-                                break;
-                            case "status":
-                                sorted = sortOrder == "asc" ? g.OrderBy(t => t.Status) : g.OrderByDescending(t => t.Status);
-                                break;
-                            case "date":
-                            default:
-                                sorted = sortOrder == "asc" ? g.OrderBy(t => t.CreatedAt) : g.OrderByDescending(t => t.CreatedAt);
-                                break;
-                        }
-                        return sorted.ToList();
-                    });
-
-                foreach (var p in priorities)
-                {
-                    var sortFieldVal = Request.Query[$"sortField_{p}"].ToString();
-                    var sortOrderVal = Request.Query[$"sortOrder_{p}"].ToString();
-                    ViewData[$"SortField_{p}"] = string.IsNullOrEmpty(sortFieldVal) ? "date" : sortFieldVal;
-                    ViewData[$"SortOrder_{p}"] = string.IsNullOrEmpty(sortOrderVal) ? "desc" : sortOrderVal;
-                }
-
-                var adminViewModel = new AdminTicketsByPriorityViewModel
-                {
-                    GroupedTickets = grouped
-                };
-                return View(adminViewModel);
-            }
-            else
-            {
-                ViewData["IsAdminView"] = false;
-                var allTicketsForUser = await ticketsQuery.ToListAsync();
-                return View(allTicketsForUser);
-            }
+                GroupedTickets = grouped
+            };
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Create()
@@ -177,6 +133,19 @@ namespace Ticketsystem.Controllers
             _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var ticket = await _context.Tickets
+                .Include(t => t.Creator)
+                .Include(t => t.Category)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (ticket == null)
+                return NotFound();
+
+            return View(ticket);
         }
     }
 }
