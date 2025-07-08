@@ -14,17 +14,17 @@
             </div>
             <div class="card-body">
                 <p class="card-text">
-                    <a asp-controller="Admin" asp-action="Tickets" asp-route-status="Offen">Offen: @Model.OpenTicketsCount</a>
+                    <a asp-controller="Ticket" asp-action="Index" asp-route-status="Offen">Offen: @Model.OpenTicketsCount</a>
                 </p>
                 <p class="card-text">
-                    <a asp-controller="Admin" asp-action="Tickets" asp-route-status="In Bearbeitung">In Bearbeitung: @Model.InProgressTicketsCount</a>
+                    <a asp-controller="Ticket" asp-action="Index" asp-route-status="In Bearbeitung">In Bearbeitung: @Model.InProgressTicketsCount</a>
                 </p>
                 <p class="card-text">
-                    <a asp-controller="Admin" asp-action="Tickets" asp-route-status="Geschlossen">Geschlossen: @Model.ClosedTicketsCount</a>
+                    <a asp-controller="Ticket" asp-action="Index" asp-route-status="Geschlossen">Geschlossen: @Model.ClosedTicketsCount</a>
                 </p>
             </div>
             <div class="card-footer">
-                <a asp-controller="Admin" asp-action="Tickets" class="btn btn-primary">Alle Tickets</a>
+                <a asp-controller="Ticket" asp-action="Index" class="btn btn-primary">Alle Tickets</a>
             </div>
         </div>
     </div>
