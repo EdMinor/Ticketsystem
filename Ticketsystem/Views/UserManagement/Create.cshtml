@@ -4,40 +4,39 @@
     ViewData["Title"] = "Create User";
 }
 
-<h2>Create User</h2>
-
-<div class="row">
-    <div class="col-md-4">
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Create User</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 max-w-lg mx-auto">
         <form asp-action="Create">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+            <div asp-validation-summary="All" class="text-red-600 mb-4"></div>
+            <div class="mb-4">
+                <label asp-for="Email" class="block text-sm font-medium mb-1"></label>
+                <input asp-for="Email" class="form-input w-full rounded border-gray-300 dark:bg-gray-900 dark:text-white" />
+                <span asp-validation-for="Email" class="text-red-600 text-xs"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+            <div class="mb-4">
+                <label asp-for="Password" class="block text-sm font-medium mb-1"></label>
+                <input asp-for="Password" class="form-input w-full rounded border-gray-300 dark:bg-gray-900 dark:text-white" />
+                <span asp-validation-for="Password" class="text-red-600 text-xs"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            <div class="mb-4">
+                <label asp-for="ConfirmPassword" class="block text-sm font-medium mb-1"></label>
+                <input asp-for="ConfirmPassword" class="form-input w-full rounded border-gray-300 dark:bg-gray-900 dark:text-white" />
+                <span asp-validation-for="ConfirmPassword" class="text-red-600 text-xs"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <select asp-for="Role" class="form-control" asp-items="new SelectList(Model.Roles)"></select>
-                <span asp-validation-for="Role" class="text-danger"></span>
+            <div class="mb-4">
+                <label asp-for="Role" class="block text-sm font-medium mb-1"></label>
+                <select asp-for="Role" class="form-select w-full rounded border-gray-300 dark:bg-gray-900 dark:text-white" asp-items="new SelectList(Model.Roles)"></select>
+                <span asp-validation-for="Role" class="text-red-600 text-xs"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FullName" class="control-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
+            <div class="mb-4">
+                <label asp-for="FullName" class="block text-sm font-medium mb-1"></label>
+                <input asp-for="FullName" class="form-input w-full rounded border-gray-300 dark:bg-gray-900 dark:text-white" />
+                <span asp-validation-for="FullName" class="text-red-600 text-xs"></span>
             </div>
-            <div class="form-group mt-3">
-                <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            <div class="flex gap-2 mt-6">
+                <button type="submit" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Create</button>
+                <a asp-action="Index" class="text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-4 py-2 rounded">Cancel</a>
             </div>
         </form>
     </div>

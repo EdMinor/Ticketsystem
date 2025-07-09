@@ -3,86 +3,95 @@
     ViewData["Title"] = "Admin Panel";
 }
 
-<div class="container mx-auto px-4 py-6">
-    <h2 class="text-2xl font-bold mb-6">@ViewData["Title"]</h2>
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">@ViewData["Title"]</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Ticket Status Übersicht -->
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-5">
-            <div class="flex items-center gap-2 mb-4 text-primary">
-                @* Lucide Icon *@
-                <i data-lucide="clipboard-list" class="w-5 h-5"></i>
-                <h3 class="text-lg font-semibold">Ticket-Status</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Ticket-Status</h3>
             </div>
             <ul class="space-y-1 text-sm">
                 <li><a asp-controller="Ticket" asp-action="Index" asp-route-status="Offen" class="hover:underline">🟢 Offen: @Model.OpenTicketsCount</a></li>
                 <li><a asp-controller="Ticket" asp-action="Index" asp-route-status="In Bearbeitung" class="hover:underline">🟡 In Bearbeitung: @Model.InProgressTicketsCount</a></li>
                 <li><a asp-controller="Ticket" asp-action="Index" asp-route-status="Geschlossen" class="hover:underline">⚪ Geschlossen: @Model.ClosedTicketsCount</a></li>
             </ul>
-            <a asp-controller="Ticket" asp-action="Index" class="btn mt-4 w-full">Alle Tickets anzeigen</a>
+            <a asp-controller="Ticket" asp-action="Index" class="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 block mt-4 text-center">Alle Tickets anzeigen →</a>
         </div>
 
         <!-- Developer -->
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-5">
-            <div class="flex items-center gap-2 mb-4 text-purple-600">
-                <i data-lucide="code" class="w-5 h-5"></i>
-                <h3 class="text-lg font-semibold">Developer</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300">
+                    <i data-lucide="code" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Developer</h3>
             </div>
             <ul class="text-sm space-y-1">
                 @if (Model.DeveloperUsers.Any())
                 {
                     @foreach (var dev in Model.DeveloperUsers)
                     {
-                                <li>@dev</li>
+                        <li>@dev</li>
                     }
                 }
                 else
                 {
-                        <li><em>Keine Developer gefunden</em></li>
+                    <li><em>Keine Developer gefunden</em></li>
                 }
             </ul>
         </div>
 
         <!-- Benutzer -->
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-5">
-            <div class="flex items-center gap-2 mb-4 text-blue-600">
-                <i data-lucide="users" class="w-5 h-5"></i>
-                <h3 class="text-lg font-semibold">Benutzer (@Model.UserNames.Count)</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Benutzer (@Model.UserNames.Count)</h3>
             </div>
             <ul class="text-sm space-y-1">
                 @foreach (var userName in Model.UserNames.Take(5))
                 {
-                        <li>@userName</li>
+                    <li>@userName</li>
                 }
             </ul>
-            <a asp-controller="UserManagement" asp-action="Index" class="btn mt-4 w-full">Benutzer verwalten</a>
+            <a asp-controller="UserManagement" asp-action="Index" class="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 block mt-4 text-center">Benutzer verwalten →</a>
         </div>
 
         <!-- Kategorien -->
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-5">
-            <div class="flex items-center gap-2 mb-4 text-green-600">
-                <i data-lucide="folder-kanban" class="w-5 h-5"></i>
-                <h3 class="text-lg font-semibold">Kategorien</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300">
+                    <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Kategorien</h3>
             </div>
             <p class="text-sm">Anzahl: <strong>@ViewBag.CategoryCount</strong></p>
-            <a asp-controller="Category" asp-action="Index" class="btn mt-4 w-full">Verwalten</a>
+            <a asp-controller="Category" asp-action="Index" class="text-sm font-medium text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300 block mt-4 text-center">Verwalten →</a>
         </div>
 
         <!-- Überfällige Tickets -->
-        <div class="bg-red-600 text-white shadow-md rounded-xl p-5 col-span-1">
-            <div class="flex items-center gap-2 mb-4">
-                <i data-lucide="alarm-clock" class="w-5 h-5"></i>
-                <h3 class="text-lg font-semibold">Überfällige Tickets</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 col-span-1">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 rounded-full bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300">
+                    <i data-lucide="alarm-clock" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Überfällige Tickets</h3>
             </div>
-            <h3 class="text-2xl font-bold">@Model.OverdueTicketsCount</h3>
-            <p class="text-sm mb-3">Offen seit über 3 Tagen</p>
-            <a asp-controller="Ticket" asp-action="Index" asp-route-overdue="true" class="btn btn-light w-full bg-white text-red-600 hover:bg-red-100">Anzeigen</a>
+            <h3 class="text-2xl font-bold text-red-600 dark:text-red-300">@Model.OverdueTicketsCount</h3>
+            <p class="text-sm mb-3 text-gray-500 dark:text-gray-400">Offen seit über 3 Tagen</p>
+            <a asp-controller="Ticket" asp-action="Index" asp-route-overdue="true" class="text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 block mt-4 text-center">Anzeigen →</a>
         </div>
     </div>
 </div>
 
 @section Scripts {
-        <script>
-            lucide.createIcons();
-        </script>
+    <script>
+        lucide.createIcons();
+    </script>
 }
