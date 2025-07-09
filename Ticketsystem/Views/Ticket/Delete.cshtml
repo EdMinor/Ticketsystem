@@ -1,19 +1,31 @@
-﻿@model Ticketsystem.Models.Ticket
+﻿
+@model Ticket
+@{
+    ViewData["Title"] = "Ticket löschen";
+}
+<div class="max-w-xl mx-auto bg-white dark:bg-gray-900 p-6 rounded-xl shadow space-y-4">
+    <h1 class="text-xl font-semibold text-red-600 flex items-center gap-2">
+        <i data-lucide="trash" class="w-6 h-6"></i>
+        Ticket löschen
+    </h1>
+    <p class="text-gray-600 dark:text-gray-300">Möchtest du das folgende Ticket wirklich löschen?</p>
 
-<h2>Ticket löschen</h2>
+    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded space-y-2">
+        <p><strong>Titel:</strong> @Model.Title</p>
+        <p><strong>Kategorie:</strong> @Model.Category?.Titel ?? "—"</p>
+        <p><strong>Erstellt von:</strong> @Model.Creator?.Email ?? "—"</p>
+    </div>
 
-<div class="mb-3">
-    <strong>Titel:</strong> @Model.Title
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="flex justify-between mt-6">
+            <a asp-action="Index" class="text-sm text-gray-600 hover:text-gray-800">
+                <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i>
+                Abbrechen
+            </a>
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                <i data-lucide="trash-2" class="w-4 h-4 inline mr-1"></i> Löschen
+            </button>
+        </div>
+    </form>
 </div>
-<div class="mb-3">
-    <strong>Beschreibung:</strong> @Model.Description
-</div>
-<div class="mb-3">
-    <strong>Status:</strong> @Model.Status
-</div>
-
-<form asp-action="DeleteConfirmed" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Ja, löschen</button>
-    <a asp-action="Index" class="btn btn-secondary">Abbrechen</a>
-</form>

@@ -1,102 +1,88 @@
 @model Ticketsystem.ViewModels.AdminTicketPanelViewModel
-
 @{
-    ViewData["Title"] = "Admin-Panel";
+    ViewData["Title"] = "Admin Panel";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mx-auto px-4 py-6">
+    <h2 class="text-2xl font-bold mb-6">@ViewData["Title"]</h2>
 
-<div class="row">
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Ticket-Status</h5>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Ticket Status Übersicht -->
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-5">
+            <div class="flex items-center gap-2 mb-4 text-primary">
+                @* Lucide Icon *@
+                <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                <h3 class="text-lg font-semibold">Ticket-Status</h3>
             </div>
-            <div class="card-body">
-                <p class="card-text">
-                    <a asp-controller="Ticket" asp-action="Index" asp-route-status="Offen">Offen: @Model.OpenTicketsCount</a>
-                </p>
-                <p class="card-text">
-                    <a asp-controller="Ticket" asp-action="Index" asp-route-status="In Bearbeitung">In Bearbeitung: @Model.InProgressTicketsCount</a>
-                </p>
-                <p class="card-text">
-                    <a asp-controller="Ticket" asp-action="Index" asp-route-status="Geschlossen">Geschlossen: @Model.ClosedTicketsCount</a>
-                </p>
-            </div>
-            <div class="card-footer">
-                <a asp-controller="Ticket" asp-action="Index" class="btn btn-primary">Alle Tickets</a>
-            </div>
+            <ul class="space-y-1 text-sm">
+                <li><a asp-controller="Ticket" asp-action="Index" asp-route-status="Offen" class="hover:underline">🟢 Offen: @Model.OpenTicketsCount</a></li>
+                <li><a asp-controller="Ticket" asp-action="Index" asp-route-status="In Bearbeitung" class="hover:underline">🟡 In Bearbeitung: @Model.InProgressTicketsCount</a></li>
+                <li><a asp-controller="Ticket" asp-action="Index" asp-route-status="Geschlossen" class="hover:underline">⚪ Geschlossen: @Model.ClosedTicketsCount</a></li>
+            </ul>
+            <a asp-controller="Ticket" asp-action="Index" class="btn mt-4 w-full">Alle Tickets anzeigen</a>
         </div>
-    </div>
 
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Developer</h5>
+        <!-- Developer -->
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-5">
+            <div class="flex items-center gap-2 mb-4 text-purple-600">
+                <i data-lucide="code" class="w-5 h-5"></i>
+                <h3 class="text-lg font-semibold">Developer</h3>
             </div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    @foreach(var dev in Model.DeveloperUsers)
+            <ul class="text-sm space-y-1">
+                @if (Model.DeveloperUsers.Any())
+                {
+                    @foreach (var dev in Model.DeveloperUsers)
                     {
-                        <li>@dev</li>
+                                <li>@dev</li>
                     }
-                    @if (!Model.DeveloperUsers.Any())
-                    {
+                }
+                else
+                {
                         <li><em>Keine Developer gefunden</em></li>
-                    }
-                </ul>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-primary">Details anzeigen</a>
-            </div>
+                }
+            </ul>
         </div>
-    </div>
 
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Benutzer (@Model.UserNames.Count)</h5>
+        <!-- Benutzer -->
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-5">
+            <div class="flex items-center gap-2 mb-4 text-blue-600">
+                <i data-lucide="users" class="w-5 h-5"></i>
+                <h3 class="text-lg font-semibold">Benutzer (@Model.UserNames.Count)</h3>
             </div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    @foreach(var userName in Model.UserNames.Take(5))
-                    {
+            <ul class="text-sm space-y-1">
+                @foreach (var userName in Model.UserNames.Take(5))
+                {
                         <li>@userName</li>
-                    }
-                </ul>
-            </div>
-            <div class="card-footer">
-                <a asp-controller="UserManagement" asp-action="Index" class="btn btn-primary">Benutzer verwalten</a>
-            </div>
+                }
+            </ul>
+            <a asp-controller="UserManagement" asp-action="Index" class="btn mt-4 w-full">Benutzer verwalten</a>
         </div>
-    </div>
 
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Kategorien</h5>
+        <!-- Kategorien -->
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-5">
+            <div class="flex items-center gap-2 mb-4 text-green-600">
+                <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+                <h3 class="text-lg font-semibold">Kategorien</h3>
             </div>
-            <div class="card-body">
-                <p class="card-text">Anzahl: @ViewBag.CategoryCount</p>
-            </div>
-            <div class="card-footer">
-                <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Verwalten</a>
-            </div>
+            <p class="text-sm">Anzahl: <strong>@ViewBag.CategoryCount</strong></p>
+            <a asp-controller="Category" asp-action="Index" class="btn mt-4 w-full">Verwalten</a>
         </div>
-    </div>
 
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100 text-white bg-danger">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Überfällige Tickets</h5>
+        <!-- Überfällige Tickets -->
+        <div class="bg-red-600 text-white shadow-md rounded-xl p-5 col-span-1">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="alarm-clock" class="w-5 h-5"></i>
+                <h3 class="text-lg font-semibold">Überfällige Tickets</h3>
             </div>
-            <div class="card-body">
-                <h3 class="card-title">@Model.OverdueTicketsCount</h3>
-                <p class="card-text">Offen seit mehr als 3 Tagen</p>
-            </div>
-            <div class="card-footer">
-                <a asp-controller="Admin" asp-action="Tickets" asp-route-overdue="true" class="btn btn-light">Anzeigen</a>
-            </div>
+            <h3 class="text-2xl font-bold">@Model.OverdueTicketsCount</h3>
+            <p class="text-sm mb-3">Offen seit über 3 Tagen</p>
+            <a asp-controller="Admin" asp-action="Tickets" asp-route-overdue="true" class="btn btn-light w-full bg-white text-red-600 hover:bg-red-100">Anzeigen</a>
         </div>
     </div>
-</div> 
+</div>
+
+@section Scripts {
+        <script>
+            lucide.createIcons();
+        </script>
+}

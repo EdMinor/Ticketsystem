@@ -27,34 +27,43 @@ namespace Ticketsystem.Controllers
         {
             var tickets = await _context.Tickets.ToListAsync();
             var users = await _userManager.Users.ToListAsync();
+
             ViewBag.CategoryCount = await _context.Categories.CountAsync();
 
-            // Получить пользователей с ролью Developer
+            // Entwickler mit Rolle "Developer"
             var developerUsers = new List<string>();
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 if (roles.Contains("Developer"))
                 {
-                    var name = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName;
-                    if (name != null)
+                    var displayName = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName;
+                    if (!string.IsNullOrWhiteSpace(displayName))
                     {
-                        developerUsers.Add(name);
+                        developerUsers.Add(displayName);
                     }
                 }
             }
+
+            // Überfällige Tickets (älter als 3 Tage, nicht geschlossen)
+            var overdueDate = DateTime.Now.AddDays(-3);
+            var overdueTicketsCount = tickets.Count(t =>
+                t.CreatedAt <= overdueDate &&
+                t.Status != "Geschlossen"
+            );
 
             var model = new AdminTicketPanelViewModel
             {
                 OpenTicketsCount = tickets.Count(t => t.Status == "Offen"),
                 InProgressTicketsCount = tickets.Count(t => t.Status == "In Bearbeitung"),
                 ClosedTicketsCount = tickets.Count(t => t.Status == "Geschlossen"),
-                OverdueTicketsCount = tickets.Count(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3)),
-                UserNames = users.Select(u => u.UserName).OfType<string>().ToList(),
+                OverdueTicketsCount = overdueTicketsCount,
+                UserNames = users.Select(u => u.UserName ?? "—").ToList(),
                 DeveloperUsers = developerUsers
             };
 
             return View(model);
         }
+
     }
 } 

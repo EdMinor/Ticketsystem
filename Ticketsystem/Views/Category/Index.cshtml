@@ -1,52 +1,48 @@
 @model IEnumerable<Ticketsystem.Models.Category>
-
 @{
     ViewData["Title"] = "Kategorien";
 }
 
-<h1>Kategorien</h1>
+<div class="flex items-center justify-between mb-4">
+    <h1 class="text-2xl font-bold">Kategorien</h1>
+    <a asp-action="Create" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+        <i data-lucide="plus" class="w-4 h-4 mr-2"></i> Neue Kategorie erstellen
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create">Neue Kategorie erstellen</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Titel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Beschreibung)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Startdatum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Enddatum)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Titel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Beschreibung)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Startdatum)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Enddatum)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Bearbeiten</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Löschen</a>
-            </td>
-        </tr>
+<div class="overflow-x-auto">
+    <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+                <th scope="col" class="px-4 py-3">Titel</th>
+                <th scope="col" class="px-4 py-3">Beschreibung</th>
+                <th scope="col" class="px-4 py-3">Startdatum</th>
+                <th scope="col" class="px-4 py-3">Enddatum</th>
+                <th scope="col" class="px-4 py-3">Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-3">@item.Titel</td>
+                        <td class="px-4 py-3">@item.Beschreibung</td>
+                        <td class="px-4 py-3">@item.Startdatum.ToShortDateString()</td>
+                        <td class="px-4 py-3">@item.Enddatum?.ToShortDateString()</td>
+                        <td class="px-4 py-3 space-x-2">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="text-blue-600 hover:underline inline-flex items-center">
+                                <i data-lucide="pencil" class="w-4 h-4 mr-1"></i> Bearbeiten
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="text-red-600 hover:underline inline-flex items-center">
+                                <i data-lucide="trash" class="w-4 h-4 mr-1"></i> Löschen
+                            </a>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+        <script>lucide.createIcons();</script>
 }
-    </tbody>
-</table> 

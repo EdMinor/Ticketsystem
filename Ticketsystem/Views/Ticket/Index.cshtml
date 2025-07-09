@@ -1,65 +1,156 @@
-﻿@model Ticketsystem.ViewModels.AdminTicketsByPriorityViewModel
-@using Microsoft.AspNetCore.Identity
-@inject UserManager<ApplicationUser> UserManager
+﻿<div class="flex justify-between items-center">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Alle Tickets</h2>
+    <a asp-action="Create" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition">
+        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+        Ticket erstellen
+    </a>
+</div>
+<br />
 
-@{
-    ViewData["Title"] = "Tickets";
-    var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
-}
 
-<a asp-action="Create" class="btn btn-primary mb-3">+ Neues Ticket</a>
+<div class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md space-y-6">
+    <!-- 🔍 Suche & Filter -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <!-- Suchfeld -->
+        <div class="relative w-full lg:w-1/2">
+            <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                <i data-lucide="search" class="w-4 h-4"></i>
+            </span>
+            <input id="searchInput"
+                   type="text"
+                   placeholder="Nach Titel suchen..."
+                   class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
 
-@foreach (var priority in priorities)
-{
-    <div class="mb-4">
-        <div class="card h-100">
-            <div class="card-header @(priority == "Hoch" ? "card-header-priority-hoch" : priority == "Mittel" ? "card-header-priority-mittel" : "card-header-priority-niedrig")">
-                <h5 class="card-title mb-0">Priorität: @priority</h5>
+        <!-- Filter -->
+        <div class="flex gap-2 w-full lg:w-auto">
+            <div class="relative">
+                <select id="filterPriority"
+                        class="appearance-none pr-10 pl-3 py-2 text-sm border border-gray-300 rounded-md bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-blue-500 focus:outline-none">
+                    <option value="">Priorität</option>
+                    <option value="Hoch">Hoch</option>
+                    <option value="Mittel">Mittel</option>
+                    <option value="Niedrig">Niedrig</option>
+                </select>
+                <i data-lucide="filter" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none"></i>
             </div>
-            <div class="card-body">
-                @if (Model.GroupedTickets.ContainsKey(priority) && Model.GroupedTickets[priority].Any())
-                {
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Titel</th>
-                                <th>Status</th>
-                                <th>Erstellt am</th>
-                                <th>Erstellt von</th>
-                                <th>Kategorie</th>
-                                <th>Aktionen</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var ticket in Model.GroupedTickets[priority])
-                        {
-                            <tr>
-                                <td><a asp-action="Details" asp-route-id="@ticket.Id">@ticket.Title</a></td>
-                                <td>@ticket.Status</td>
-                                <td>@ticket.CreatedAt.ToString("dd.MM.yyyy")</td>
-                                <td>@(string.IsNullOrWhiteSpace(ticket.Creator?.FullName) ? ticket.Creator?.UserName : ticket.Creator?.FullName)</td>
-                                <td>@ticket.Category?.Titel</td>
-                                <td>
-                                    @if (User.IsInRole("Admin") || ticket.CreatorId == UserManager.GetUserId(User))
-                                    {
-                                        <a asp-action="Edit" asp-route-id="@ticket.Id" title="Bearbeiten">✏️</a>
-                                        <a asp-action="Delete" asp-route-id="@ticket.Id" title="Löschen">🗑</a>
-                                    }
-                                    else
-                                    {
-                                        <span>---</span>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <p>Keine Tickets mit dieser Priorität.</p>
-                }
+            <div class="relative">
+                <select id="filterStatus"
+                        class="appearance-none pr-10 pl-3 py-2 text-sm border border-gray-300 rounded-md bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-blue-500 focus:outline-none">
+                    <option value="">Status</option>
+                    <option value="Offen">Offen</option>
+                    <option value="In Bearbeitung">In Bearbeitung</option>
+                    <option value="Geschlossen">Geschlossen</option>
+                </select>
+                <i data-lucide="filter" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none"></i>
             </div>
         </div>
     </div>
+
+    <!-- 🧾 Tabelle -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full table-auto text-sm text-gray-800 dark:text-gray-100">
+            <thead class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 uppercase text-xs">
+                <tr>
+                    <th class="px-4 py-3 text-left cursor-pointer sort-header" data-sort="title">Titel</th>
+                    <th class="px-4 py-3">Priorität</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Kategorie</th>
+                    <th class="px-4 py-3 cursor-pointer sort-header" data-sort="date">Erstellt am:</th>
+                    <th class="px-4 py-2">Erstellt von</th>
+
+                    <th class="px-4 py-3">Aktionen</th>
+                </tr>
+            </thead>
+            <tbody id="ticketBody">
+                @foreach (var ticket in Model.AllTickets)
+                {
+                    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    var isOwner = ticket.CreatorId == currentUserId;
+                        <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                            data-title="@ticket.Title.ToLower()" data-priority="@ticket.Priority" data-status="@ticket.Status" data-date="@ticket.CreatedAt.Ticks">
+                            <td class="px-4 py-2">@ticket.Title</td>
+                            <td class="px-4 py-2">
+                                <span class="text-xs font-semibold px-2 py-1 rounded-full
+                            @(ticket.Priority == "Hoch" ? "bg-red-200 text-red-800" :
+                              ticket.Priority == "Mittel" ? "bg-yellow-200 text-yellow-800" :
+                              "bg-green-200 text-green-800")">
+                                @ticket.Priority
+                                </span>
+                            </td>
+                            <td class="px-4 py-2">@ticket.Status</td>
+                            <td class="px-4 py-2">@ticket.Category?.Titel</td>
+                            <td class="px-4 py-2">@ticket.CreatedAt.ToShortDateString()</td>
+                                <td class="px-4 py-2">@ticket.Creator?.Email</td>
+
+                            <td class="px-4 py-2 flex gap-3 items-center">
+                                <a asp-action="Details" asp-route-id="@ticket.Id" class="text-blue-600 hover:text-blue-800" title="Details">
+                                    <i data-lucide="eye" class="w-5 h-5"></i>
+                                </a>
+                            @if (isOwner || User.IsInRole("Admin"))
+                            {
+                                        <a asp-action="Edit" asp-route-id="@ticket.Id" class="text-yellow-500 hover:text-yellow-700" title="Bearbeiten">
+                                            <i data-lucide="pencil" class="w-5 h-5"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@ticket.Id" class="text-red-500 hover:text-red-700" title="Löschen">
+                                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                        </a>
+                            }
+                            </td>
+                        </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            lucide.createIcons();
+
+            const searchInput = document.getElementById("searchInput");
+            const filterPriority = document.getElementById("filterPriority");
+            const filterStatus = document.getElementById("filterStatus");
+            const rows = Array.from(document.querySelectorAll("#ticketBody tr"));
+
+            function filterAndSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedPriority = filterPriority.value;
+                const selectedStatus = filterStatus.value;
+
+                rows.forEach(row => {
+                    const title = row.dataset.title;
+                    const priority = row.dataset.priority;
+                    const status = row.dataset.status;
+
+                    const matches = (!searchTerm || title.includes(searchTerm)) &&
+                                    (!selectedPriority || priority === selectedPriority) &&
+                                    (!selectedStatus || status === selectedStatus);
+
+                    row.style.display = matches ? "" : "none";
+                });
+            }
+
+            [searchInput, filterPriority, filterStatus].forEach(el => el.addEventListener("input", filterAndSearch));
+
+            // Sortierung
+            document.querySelectorAll(".sort-header").forEach(header => {
+                let asc = true;
+                header.addEventListener("click", () => {
+                    const key = header.dataset.sort;
+                    const index = key === "title" ? "title" : "date";
+                    rows.sort((a, b) => {
+                        const aVal = a.dataset[index];
+                        const bVal = b.dataset[index];
+                        return asc ? aVal.localeCompare(bVal, undefined, { numeric: true }) : bVal.localeCompare(aVal, undefined, { numeric: true });
+                    });
+                    asc = !asc;
+                    const body = document.getElementById("ticketBody");
+                    rows.forEach(row => body.appendChild(row));
+                });
+            });
+        });
+    </script>
 }
