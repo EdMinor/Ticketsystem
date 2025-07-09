@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Ticketsystem.Models;
 
 namespace Ticketsystem.Controllers
@@ -8,14 +9,22 @@ namespace Ticketsystem.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        private readonly AppDbContext _context;
+
+        public HomeController(AppDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var tickets = _context.Tickets
+                .Include(t => t.Category)
+                .Include(t => t.Creator)
+                .ToList();
+
+            return View(tickets);
         }
 
         public IActionResult Privacy()

@@ -2,10 +2,10 @@
     ViewData["Title"] = "Zugriff verweigert";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">Sie haben keine Berechtigung, auf diese Seite zuzugreifen.</p>
-    <p>
-        <a asp-action="Index" asp-controller="Home">Zurück zur Startseite</a>
-    </p>
-</header> 
+<div class="max-w-md mx-auto mt-16 bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
+    <h1 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">@ViewData["Title"]</h1>
+    <p class="text-gray-700 dark:text-gray-300 mb-4">Sie haben keine Berechtigung, auf diese Seite zuzugreifen.</p>
+    <a asp-action="Index" asp-controller="Home" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none">
+        Zurück zur Startseite
+    </a>
+</div>

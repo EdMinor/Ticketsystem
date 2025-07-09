@@ -26,7 +26,9 @@ namespace Ticketsystem.Controllers
 
         public async Task<IActionResult> Index(string? status = null, bool overdue = false)
         {
-            IQueryable<Ticket> ticketsQuery = _context.Tickets.Include(t => t.Creator).Include(t => t.Category);
+            IQueryable<Ticket> ticketsQuery = _context.Tickets
+                .Include(t => t.Creator)
+                .Include(t => t.Category);
 
             if (!string.IsNullOrEmpty(status))
                 ticketsQuery = ticketsQuery.Where(t => t.Status == status);
@@ -35,17 +37,23 @@ namespace Ticketsystem.Controllers
                 ticketsQuery = ticketsQuery.Where(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3));
 
             var tickets = await ticketsQuery.ToListAsync();
-            var priorities = new[] { "Hoch", "Mittel", "Niedrig" };
+
             var grouped = tickets
                 .GroupBy(t => t.Priority ?? "Unbekannt")
                 .ToDictionary(g => g.Key, g => g.ToList());
 
+            var categories = await _context.Categories.ToListAsync();
+
             var viewModel = new AdminTicketsByPriorityViewModel
             {
-                GroupedTickets = grouped
+                AllTickets = tickets,
+                GroupedTickets = grouped,
+                Categories = categories
             };
+
             return View(viewModel);
         }
+
 
         public async Task<IActionResult> Create()
         {

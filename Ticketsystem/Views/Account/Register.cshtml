@@ -1,31 +1,38 @@
 ﻿@model Ticketsystem.Models.RegisterModel
+@{
+    ViewData["Title"] = "Registrieren";
+}
 
-<h2>Registrieren</h2>
+<div class="max-w-md mx-auto mt-10 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">Registrieren</h2>
 
-<form asp-action="Register" method="post">
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+    <form asp-action="Register" method="post" class="space-y-4">
+        <div>
+            <label asp-for="Email" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"></label>
+            <input asp-for="Email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" />
+            <span asp-validation-for="Email" class="text-sm text-red-500"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+        <div>
+            <label asp-for="Password" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"></label>
+            <input asp-for="Password" type="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" />
+            <span asp-validation-for="Password" class="text-sm text-red-500"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" class="form-control" />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
+        <div>
+            <label asp-for="ConfirmPassword" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"></label>
+            <input asp-for="ConfirmPassword" type="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" />
+            <span asp-validation-for="ConfirmPassword" class="text-sm text-red-500"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
+        <div>
+            <label asp-for="FullName" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"></label>
+            <input asp-for="FullName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" />
+            <span asp-validation-for="FullName" class="text-sm text-red-500"></span>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Registrieren</button>
-</form>
+        <button type="submit" class="w-full text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-500 dark:hover:bg-green-600">
+            Registrieren
+        </button>
+    </form>
+</div>

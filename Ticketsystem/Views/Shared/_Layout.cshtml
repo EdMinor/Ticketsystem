@@ -1,86 +1,180 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Ticketsystem</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Ticketsystem.styles.css" asp-append-version="true" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind CSS -->
+    <link href="~/css/output.css" rel="stylesheet" />
+
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm mb-3">
-    <div class="container-fluid">
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index">Ticketsystem</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
-                aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo & Main Navigation -->
+                    <div class="flex items-center">
+                        <!-- Mobile menu button -->
+                        <button type="button" id="mobile-menu-button" class="md:hidden text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none">
+                            <i data-lucide="menu" class="h-6 w-6"></i>
+                        </button>
 
-        <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Ticket" asp-action="Index">Tickets</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                </li>
-                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
-                {
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin Panel</a>
-                    </li>
-                }
-            </ul>
+                        <!-- Logo -->
+                        <a asp-controller="Home" asp-action="Index" class="flex-shrink-0 flex items-center">
+                            <i data-lucide="ticket" class="h-8 w-8 text-blue-600 dark:text-blue-400"></i>
+                            <span class="ml-2 text-xl font-bold text-gray-900 dark:text-white">TicketSystem</span>
+                        </a>
 
-            <ul class="navbar-nav mb-2 mb-lg-0">
+                        <!-- Desktop Navigation -->
+                        <div class="hidden md:ml-8 md:flex md:items-center md:space-x-4">
+                            <a asp-controller="Home" asp-action="Index" class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 flex items-center">
+                                <i data-lucide="home" class="w-4 h-4 mr-1"></i> Home
+                            </a>
+                            <a asp-controller="Ticket" asp-action="Index" class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 flex items-center">
+                                <i data-lucide="ticket" class="w-4 h-4 mr-1"></i> Tickets
+                            </a>
+                            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                            {
+                                    <a asp-controller="Admin" asp-action="Index" class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 flex items-center">
+                                        <i data-lucide="shield" class="w-4 h-4 mr-1"></i> Admin
+                                    </a>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Dark Mode Toggle -->
+                        <button id="theme-toggle" type="button" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i data-lucide="sun" id="theme-toggle-light-icon" class="w-5 h-5 hidden text-gray-700 dark:text-gray-300"></i>
+                            <i data-lucide="moon" id="theme-toggle-dark-icon" class="w-5 h-5 hidden text-gray-700 dark:text-gray-300"></i>
+                        </button>
+
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                        <li class="nav-item">
-                            <span class="nav-link">👤 @User.Identity?.Name</span>
-                        </li>
-                        <li class="nav-item">
-                            <span class="nav-link">🛡️ @User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value</span>
-                        </li>
-                        <li class="nav-item">
-                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
-                            </form>
-                        </li>
+                                <!-- User Dropdown (mit Alpine.js für bessere Interaktion) -->
+                                <div class="relative" x-data="{ open: false }">
+                                    <button @@click="open = !open" 
+                                            @@keydown.escape="open = false"
+                                            class="flex items-center space-x-2 focus:outline-none">
+                                        <div class="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                                            <i data-lucide="user" class="w-4 h-4 text-blue-600 dark:text-blue-300"></i>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300 hidden md:inline">@User.Identity?.Name</span>
+                                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200" :class="{ 'transform rotate-180': open }"></i>
+                                    </button>
+
+                                    <!-- Dropdown Menu -->
+                                    <div x-show="open" 
+                                         x-transition:enter="transition ease-out duration-100"
+                                         x-transition:enter-start="transform opacity-0 scale-95"
+                                         x-transition:enter-end="transform opacity-100 scale-100"
+                                         x-transition:leave="transition ease-in duration-75"
+                                         x-transition:leave-start="transform opacity-100 scale-100"
+                                         x-transition:leave-end="transform opacity-0 scale-95"
+                                         @@click.away="open = false"
+                                         class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                                        <div class="py-1">
+                                            <div class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-gray-600">
+                                                <div class="font-medium">@User.Identity?.Name</div>
+                                                <div class="text-xs text-gray-500 dark:text-gray-400">@User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value</div>
+                                            </div>
+                                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 flex items-center">
+                                                    <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Logout
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                         }
                         else
                         {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-                        </li>
+                                <div class="flex items-center space-x-2">
+                                    <a asp-controller="Account" asp-action="Login" class="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 flex items-center">
+                                        <i data-lucide="log-in" class="w-4 h-4 mr-1"></i> Login
+                                    </a>
+                                    <a asp-controller="Account" asp-action="Register" class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md flex items-center">
+                                        <i data-lucide="user-plus" class="w-4 h-4 mr-1"></i> Register
+                                    </a>
+                                </div>
                         }
-            </ul>
-        </div>
-    </div>
-</nav>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden" id="mobile-menu">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-800">
+                    <a asp-controller="Home" asp-action="Index" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-gray-700 flex items-center">
+                        <i data-lucide="home" class="w-4 h-4 mr-2"></i> Home
+                    </a>
+                    <a asp-controller="Ticket" asp-action="Index" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-gray-700 flex items-center">
+                        <i data-lucide="ticket" class="w-4 h-4 mr-2"></i> Tickets
+                    </a>
+                    @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                    {
+                            <a asp-controller="Admin" asp-action="Index" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-gray-700 flex items-center">
+                                <i data-lucide="shield" class="w-4 h-4 mr-2"></i> Admin
+                            </a>
+                    }
+                </div>
+            </div>
+        </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Ticketsystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="ticket" class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">&copy; @DateTime.Now.Year - Ticketsystem</span>
+                </div>
+                <div class="mt-2 md:mt-0">
+                    <a asp-controller="Home" asp-action="Privacy" class="text-sm text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 flex items-center">
+                        <i data-lucide="shield" class="w-4 h-4 mr-1"></i> Privacy Policy
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/flowbite.min.js"></script>
+    <script src="~/js/darkmode.js"></script>
+    <!-- Alpine.js für Dropdown-Interaktionen -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+</script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

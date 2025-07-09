@@ -1,44 +1,47 @@
-﻿@model Ticketsystem.Models.Ticket
+﻿
+@model Ticket
+@{
+    ViewData["Title"] = "Ticket bearbeiten";
+}
+<div class="max-w-3xl mx-auto bg-white dark:bg-gray-900 p-6 rounded-xl shadow space-y-6">
+    <h1 class="text-xl font-semibold flex items-center gap-2">
+        <i data-lucide="pencil" class="w-6 h-6 text-yellow-600"></i>
+        Ticket bearbeiten
+    </h1>
+    <form asp-action="Edit" method="post" class="space-y-4">
+        <input type="hidden" asp-for="Id" />
 
-<h2>Ticket bearbeiten</h2>
+        <div>
+            <label asp-for="Title" class="block font-medium">Titel</label>
+            <input asp-for="Title" class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white" />
+        </div>
 
-<form asp-action="Edit" method="post">
-        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+        <div>
+            <label asp-for="Description" class="block font-medium">Beschreibung</label>
+            <textarea asp-for="Description" rows="4" class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white"></textarea>
+        </div>
 
-    <input type="hidden" asp-for="Id" />
+        <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1">
+                <label asp-for="Priority" class="block font-medium">Priorität</label>
+                <select asp-for="Priority" class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white">
+                    <option>Hoch</option>
+                    <option>Mittel</option>
+                    <option>Niedrig</option>
+                </select>
+            </div>
+            <div class="flex-1">
+                <label asp-for="CategoryId" class="block font-medium">Kategorie</label>
+                <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white">
+                    <option disabled>-- Bitte wählen --</option>
+                </select>
+            </div>
+        </div>
 
-
-    <div class="mb-3">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Priority" class="form-label"></label>
-        <select asp-for="Priority" class="form-select">
-            <option value="">Bitte wählen</option>
-            <option>Niedrig</option>
-            <option>Mittel</option>
-            <option>Hoch</option>
-        </select>
-        <span asp-validation-for="Priority" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Status"></label>
-        <select asp-for="Status" class="form-control">
-            <option>Offen</option>
-            <option>In Bearbeitung</option>
-            <option>Erledigt</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Speichern</button>
-    <a asp-action="Index" class="btn btn-secondary">Zurück</a>
-</form>
+        <div class="flex justify-end">
+            <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
+                <i data-lucide="save" class="w-4 h-4 inline mr-1"></i> Änderungen speichern
+            </button>
+        </div>
+    </form>
+</div>
