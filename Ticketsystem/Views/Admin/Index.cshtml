@@ -76,7 +76,7 @@
             </div>
             <h3 class="text-2xl font-bold">@Model.OverdueTicketsCount</h3>
             <p class="text-sm mb-3">Offen seit über 3 Tagen</p>
-            <a asp-controller="Admin" asp-action="Tickets" asp-route-overdue="true" class="btn btn-light w-full bg-white text-red-600 hover:bg-red-100">Anzeigen</a>
+            <a asp-controller="Ticket" asp-action="Index" asp-route-overdue="true" class="btn btn-light w-full bg-white text-red-600 hover:bg-red-100">Anzeigen</a>
         </div>
     </div>
 </div>
