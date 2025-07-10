@@ -165,37 +165,51 @@ namespace Ticketsystem.Controllers
             if (ticket == null)
                 return NotFound();
 
-            // Получаем список разработчиков для формы назначения
+            // Kommentare zum Ticket laden (inkl. Benutzer)
+            var comments = await _context.TicketComments
+                .Where(c => c.TicketId == id)
+                .Include(c => c.User)
+                .OrderBy(c => c.CreatedAt)
+                .ToListAsync();
+
+            // Entwicklerliste für Admin
             if (User.IsInRole("Admin"))
             {
                 ViewBag.Developers = await _userManager.GetUsersInRoleAsync("Developer");
             }
 
-            return View(ticket);
+            var viewModel = new TicketDetailsViewModel
+            {
+                Ticket = ticket,
+                Comments = comments
+            };
+
+            return View(viewModel);
         }
 
+        // Kommentar hinzufügen
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AssignDeveloper(int ticketId, string developerId)
+        [Authorize]
+        public async Task<IActionResult> AddComment(int ticketId, string newCommentText)
         {
+            if (string.IsNullOrWhiteSpace(newCommentText) || newCommentText.Length > 2000)
+            {
+                TempData["CommentError"] = "Kommentar darf nicht leer sein und maximal 2000 Zeichen haben.";
+                return RedirectToAction(nameof(Details), new { id = ticketId });
+            }
+
             var ticket = await _context.Tickets.FindAsync(ticketId);
             if (ticket == null) return NotFound();
 
-            // Wenn kein Developer ausgewählt wurde, Zuweisung entfernen
-            if (string.IsNullOrEmpty(developerId))
+            var userId = _userManager.GetUserId(User);
+            var comment = new TicketComment
             {
-                ticket.ZugewiesenerId = null;
-                ticket.ZugewiesenAm = null;
-            }
-            else
-            {
-                var developer = await _userManager.FindByIdAsync(developerId);
-                if (developer == null) return NotFound();
-                ticket.ZugewiesenerId = developerId;
-                ticket.ZugewiesenAm = DateTime.Now;
-            }
-
-            _context.Tickets.Update(ticket);
+                TicketId = ticketId,
+                UserId = userId,
+                Text = newCommentText,
+                CreatedAt = DateTime.Now
+            };
+            _context.TicketComments.Add(comment);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Details), new { id = ticketId });

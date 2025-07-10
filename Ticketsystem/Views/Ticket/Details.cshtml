@@ -1,4 +1,4 @@
-﻿@model Ticketsystem.Models.Ticket
+﻿@model Ticketsystem.ViewModels.TicketDetailsViewModel
 @{
     ViewData["Title"] = "Ticket-Details";
 }
@@ -12,54 +12,54 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800 dark:text-gray-200">
         <div>
             <p class="font-semibold text-gray-500 dark:text-gray-400">Titel</p>
-            <p>@Model.Title</p>
+            <p>@Model.Ticket.Title</p>
         </div>
 
-        @if (!string.IsNullOrEmpty(Model.Category?.Titel))
+        @if (!string.IsNullOrEmpty(Model.Ticket.Category?.Titel))
         {
                 <div>
                     <p class="font-semibold text-gray-500 dark:text-gray-400">Kategorie</p>
-                    <p>@Model.Category.Titel</p>
+                    <p>@Model.Ticket.Category.Titel</p>
                 </div>
         }
 
         <div>
             <p class="font-semibold text-gray-500 dark:text-gray-400">Priorität</p>
             <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold
-                @(Model.Priority == "Hoch" ? "bg-red-200 text-red-800" :
-                  Model.Priority == "Mittel" ? "bg-yellow-200 text-yellow-800" :
+                @(Model.Ticket.Priority == "Hoch" ? "bg-red-200 text-red-800" :
+                  Model.Ticket.Priority == "Mittel" ? "bg-yellow-200 text-yellow-800" :
                   "bg-green-200 text-green-800")">
-                @Model.Priority
+                @Model.Ticket.Priority
             </span>
         </div>
 
         <div>
             <p class="font-semibold text-gray-500 dark:text-gray-400">Status</p>
-            <p>@Model.Status</p>
+            <p>@Model.Ticket.Status</p>
         </div>
 
         <div>
             <p class="font-semibold text-gray-500 dark:text-gray-400">Erstellt am</p>
-            <p>@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+            <p>@Model.Ticket.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
         </div>
 
-        @if (!string.IsNullOrEmpty(Model.Creator?.UserName))
+        @if (!string.IsNullOrEmpty(Model.Ticket.Creator?.UserName))
         {
                 <div>
                     <p class="font-semibold text-gray-500 dark:text-gray-400">Erstellt von</p>
-                    <p>@Model.Creator.UserName</p>
+                    <p>@Model.Ticket.Creator.UserName</p>
                 </div>
         }
 
         <div>
             <p class="font-semibold text-gray-500 dark:text-gray-400">Zugewiesener Bearbeiter</p>
-            @if (Model.Zugewiesener != null)
+            @if (Model.Ticket.Zugewiesener != null)
             {
                 <div>
-                    <p class="text-blue-600 dark:text-blue-400 font-medium">@Model.Zugewiesener.Email</p>
-                    @if (Model.ZugewiesenAm != null && Model.ZugewiesenAm != DateTime.MinValue)
+                    <p class="text-blue-600 dark:text-blue-400 font-medium">@Model.Ticket.Zugewiesener.Email</p>
+                    @if (Model.Ticket.ZugewiesenAm != null && Model.Ticket.ZugewiesenAm != DateTime.MinValue)
                     {
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Zugewiesen am: @Model.ZugewiesenAm?.ToString("dd.MM.yyyy HH:mm")</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Zugewiesen am: @Model.Ticket.ZugewiesenAm?.ToString("dd.MM.yyyy HH:mm")</p>
                     }
                 </div>
             }
@@ -70,22 +70,22 @@
         </div>
     </div>
 
-    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    @if (!string.IsNullOrWhiteSpace(Model.Ticket.Description))
     {
             <div>
                 <p class="font-semibold text-gray-500 dark:text-gray-400 mb-1">Beschreibung</p>
                 <div class="whitespace-pre-line p-4 bg-gray-50 dark:bg-gray-800 rounded-md text-sm text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
-                @Model.Description
+                @Model.Ticket.Description
                 </div>
             </div>
     }
 
     <!-- Fall schließen für Developer -->
-    @if (User.IsInRole("Developer") && Model.Status != "Geschlossen" && Model.ZugewiesenerId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+    @if (User.IsInRole("Developer") && Model.Ticket.Status != "Geschlossen" && Model.Ticket.ZugewiesenerId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
     {
         <div class="flex justify-center pt-4">
             <form asp-action="CloseCase" method="post" style="display: inline;">
-                <input type="hidden" name="ticketId" value="@Model.Id" />
+                <input type="hidden" name="ticketId" value="@Model.Ticket.Id" />
                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
                     <i data-lucide="lock" class="w-5 h-5"></i>
                     Fall schließen
@@ -94,11 +94,11 @@
         </div>
     }
     <!-- Fall wieder eröffnen für Admin und Ersteller -->
-    @if (Model.Status == "Geschlossen" && (User.IsInRole("Admin") || Model.CreatorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value))
+    @if (Model.Ticket.Status == "Geschlossen" && (User.IsInRole("Admin") || Model.Ticket.CreatorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value))
     {
         <div class="flex justify-center pt-4">
             <form asp-action="ReopenCase" method="post" style="display: inline;">
-                <input type="hidden" name="ticketId" value="@Model.Id" />
+                <input type="hidden" name="ticketId" value="@Model.Ticket.Id" />
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
                     <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
                     Fall wieder eröffnen
@@ -108,11 +108,11 @@
     }
 
     <!-- Fall übernehmen für Developer, wenn noch nicht zugewiesen und nicht ersteller und nicht geschlossen-->
-    @if (User.IsInRole("Developer") && Model.Zugewiesener == null && Model.Status != "Geschlossen" && Model.CreatorId != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+    @if (User.IsInRole("Developer") && Model.Ticket.Zugewiesener == null && Model.Ticket.Status != "Geschlossen" && Model.Ticket.CreatorId != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
     {
         <div class="flex justify-center pt-4">
             <form asp-action="TakeOverCase" method="post" style="display: inline;">
-                <input type="hidden" name="ticketId" value="@Model.Id" />
+                <input type="hidden" name="ticketId" value="@Model.Ticket.Id" />
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
                     <i data-lucide="user-check" class="w-5 h-5"></i>
                     Fall übernehmen
@@ -121,20 +121,20 @@
         </div>
     }
 
-    <!-- Назначение разработчика для админов -->
+    <!-- Developer zuweisen für Admin -->
     @if (User.IsInRole("Admin"))
     {
         <div class="border-t dark:border-gray-700 pt-4">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">Entwickler zuweisen</h3>
             <form asp-action="AssignDeveloper" method="post" class="flex gap-3 items-end">
-                <input type="hidden" name="ticketId" value="@Model.Id" />
+                <input type="hidden" name="ticketId" value="@Model.Ticket.Id" />
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Entwickler auswählen</label>
                     <select name="developerId" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">(Kein Developer zugewiesen)</option>
                         @foreach (var developer in ViewBag.Developers ?? new List<ApplicationUser>())
                         {
-                            @if (Model.ZugewiesenerId == developer.Id)
+                            @if (Model.Ticket.ZugewiesenerId == developer.Id)
                             {
                                 <option value="@developer.Id" selected>@developer.Email</option>
                             }
@@ -157,18 +157,62 @@
             <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Zurück zur Übersicht
         </a>
 
-        @if (User.IsInRole("Admin") || Model.CreatorId == User.FindFirst("sub")?.Value)
+        @if (User.IsInRole("Admin") || Model.Ticket.CreatorId == User.FindFirst("sub")?.Value)
         {
                 <div class="flex gap-3">
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="text-yellow-500 hover:text-yellow-600 flex items-center text-sm">
+                    <a asp-action="Edit" asp-route-id="@Model.Ticket.Id" class="text-yellow-500 hover:text-yellow-600 flex items-center text-sm">
                         <i data-lucide="pencil" class="w-4 h-4 mr-1"></i> Bearbeiten
                     </a>
-                    <a asp-action="Delete" asp-route-id="@Model.Id" class="text-red-500 hover:text-red-600 flex items-center text-sm">
+                    <a asp-action="Delete" asp-route-id="@Model.Ticket.Id" class="text-red-500 hover:text-red-600 flex items-center text-sm">
                         <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Löschen
                     </a>
                 </div>
         }
     </div>
+</div>
+
+<!-- Kommentare -->
+<div class="mt-8">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">Kommentare</h3>
+    @if (Model.Comments.Any())
+    {
+        <div class="space-y-4">
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-md p-4 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="font-semibold text-blue-700 dark:text-blue-300">@(string.IsNullOrWhiteSpace(comment.User?.FullName) ? comment.User?.UserName : comment.User?.FullName)</span>
+                        <span class="text-xs text-gray-500">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                    </div>
+                    <div class="text-sm text-gray-800 dark:text-gray-200">@comment.Text</div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-gray-400 dark:text-gray-500">Noch keine Kommentare vorhanden.</div>
+    }
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form asp-action="AddComment" method="post" class="mt-6">
+            <input type="hidden" name="ticketId" value="@Model.Ticket.Id" />
+            <div class="mb-2">
+                <label for="newCommentText" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Neuer Kommentar</label>
+                <textarea id="newCommentText" name="newCommentText" rows="3" maxlength="2000" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+            @if (TempData["CommentError"] != null)
+            {
+                <div class="text-red-600 text-sm mb-2">@TempData["CommentError"]</div>
+            }
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200">Kommentar hinzufügen</button>
+        </form>
+    }
+    else
+    {
+        <div class="text-sm text-gray-500 mt-4">Bitte <a asp-controller="Account" asp-action="Login" class="text-blue-600 hover:underline">anmelden</a>, um einen Kommentar zu schreiben.</div>
+    }
 </div>
 
 <script>
