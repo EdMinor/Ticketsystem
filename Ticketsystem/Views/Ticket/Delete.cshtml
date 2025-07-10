@@ -16,7 +16,7 @@
         <p><strong>Erstellt von:</strong> @Model.Creator?.Email ?? "—"</p>
     </div>
 
-    <form asp-action="DeleteConfirmed" method="post">
+    <form asp-action="Delete" method="post">
         <input type="hidden" asp-for="Id" />
         <div class="flex justify-between mt-6">
             <a asp-action="Index" class="text-sm text-gray-600 hover:text-gray-800">

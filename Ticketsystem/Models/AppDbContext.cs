@@ -12,5 +12,6 @@ namespace Ticketsystem.Models
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<TicketComment> TicketComments { get; set; } // Kommentare zu Tickets
+        public DbSet<TicketAttachment> TicketAttachments { get; set; } // Anhänge/Dateien zu Tickets
     }
 }

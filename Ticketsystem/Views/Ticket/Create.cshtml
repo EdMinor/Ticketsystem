@@ -1,4 +1,4 @@
-﻿@model Ticket
+﻿@model Ticketsystem.ViewModels.CreateTicketViewModel
 @{
     ViewData["Title"] = "Neues Ticket erstellen";
 }
@@ -7,7 +7,11 @@
         <i data-lucide="plus-circle" class="w-6 h-6 text-blue-600"></i>
         Neues Ticket erstellen
     </h1>
-    <form asp-action="Create" method="post" class="space-y-4">
+    @if (TempData["FileError"] != null)
+    {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">@TempData["FileError"]</div>
+    }
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="space-y-4">
         <div>
             <label asp-for="Title" class="block font-medium">Titel</label>
             <input asp-for="Title" class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white" />
@@ -34,6 +38,12 @@
                     <option disabled selected>-- Bitte wählen --</option>
                 </select>
             </div>
+        </div>
+
+        <div>
+            <label class="block font-medium mb-1">Dateien hochladen (max. 5MB, PDF/Bilder/ZIP)</label>
+            <input type="file" name="NewFiles" multiple accept=".pdf,.jpg,.jpeg,.png,.gif,.zip" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600" />
+            <span asp-validation-for="NewFiles" class="text-red-600 text-xs"></span>
         </div>
 
         <div class="flex justify-end">

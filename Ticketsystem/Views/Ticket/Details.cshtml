@@ -79,6 +79,31 @@
                 </div>
             </div>
     }
+<!-- Anhänge -->
+<div class="mt-8">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">Anhänge</h3>
+    @if (Model.Attachments.Any())
+    {
+        <ul class="divide-y divide-gray-200 dark:divide-gray-700 mb-2">
+            @foreach (var file in Model.Attachments)
+            {
+                <li class="flex items-center justify-between py-2">
+                    <div>
+                        <span class="font-semibold">@file.FileName</span>
+                        <span class="text-xs text-gray-500 ml-2">(@(file.Size / 1024) KB)</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <a asp-action="DownloadAttachment" asp-route-id="@file.Id" class="text-blue-600 hover:underline text-sm">Herunterladen</a>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="text-gray-400 text-sm">Keine Anhänge vorhanden.</div>
+    }
+</div>
 
     <!-- Fall schließen für Developer -->
     @if (User.IsInRole("Developer") && Model.Ticket.Status != "Geschlossen" && Model.Ticket.ZugewiesenerId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
@@ -157,7 +182,7 @@
             <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Zurück zur Übersicht
         </a>
 
-        @if (User.IsInRole("Admin") || Model.Ticket.CreatorId == User.FindFirst("sub")?.Value)
+        @if (User.IsInRole("Admin") || Model.Ticket.CreatorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
         {
                 <div class="flex gap-3">
                     <a asp-action="Edit" asp-route-id="@Model.Ticket.Id" class="text-yellow-500 hover:text-yellow-600 flex items-center text-sm">
@@ -214,6 +239,7 @@
         <div class="text-sm text-gray-500 mt-4">Bitte <a asp-controller="Account" asp-action="Login" class="text-blue-600 hover:underline">anmelden</a>, um einen Kommentar zu schreiben.</div>
     }
 </div>
+
 
 <script>
     lucide.createIcons();
