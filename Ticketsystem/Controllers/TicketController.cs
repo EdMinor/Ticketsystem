@@ -24,7 +24,8 @@ namespace Ticketsystem.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string? status = null, bool overdue = false)
+        // Filter für Tickets, die einem DevOps (Developer) zugewiesen sind
+        public async Task<IActionResult> Index(string? status = null, bool overdue = false, bool assignedToDevOps = false)
         {
             IQueryable<Ticket> ticketsQuery = _context.Tickets
                 .Include(t => t.Creator)
@@ -36,6 +37,15 @@ namespace Ticketsystem.Controllers
 
             if (overdue)
                 ticketsQuery = ticketsQuery.Where(t => t.Status != "Geschlossen" && t.CreatedAt < DateTime.Now.AddDays(-3));
+
+            // Wenn assignedToDevOps aktiviert ist, nur Tickets anzeigen, die einem Benutzer mit der Rolle "Developer" zugewiesen sind
+            if (assignedToDevOps)
+            {
+                // Hole alle UserIds mit Rolle "Developer"
+                var devOpsUsers = await _userManager.GetUsersInRoleAsync("Developer");
+                var devOpsUserIds = devOpsUsers.Select(u => u.Id).ToList();
+                ticketsQuery = ticketsQuery.Where(t => t.ZugewiesenerId != null && devOpsUserIds.Contains(t.ZugewiesenerId));
+            }
 
             var tickets = await ticketsQuery.ToListAsync();
 

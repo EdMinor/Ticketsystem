@@ -24,6 +24,11 @@
 
         <!-- Filter -->
         <div class="flex gap-2 w-full lg:w-auto">
+            <!-- DevOps-Filter -->
+            <div class="flex items-center mr-4">
+                <input type="checkbox" id="devopsFilter" class="form-checkbox h-4 w-4 text-purple-600" @(Context.Request.Query["assignedToDevOps"] == "true" ? "checked" : "") />
+                <label for="devopsFilter" class="ml-2 text-sm text-gray-700 dark:text-gray-200">Nur DevOps-Tickets</label>
+            </div>
             <div class="relative">
                 <select id="filterPriority"
                         class="appearance-none pr-10 pl-3 py-2 text-sm border border-gray-300 rounded-md bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-blue-500 focus:outline-none">
@@ -165,6 +170,18 @@
                     const body = document.getElementById("ticketBody");
                     rows.forEach(row => body.appendChild(row));
                 });
+            });
+
+            // DevOps-Filter: Seite neu laden mit Parameter
+            const devopsFilter = document.getElementById("devopsFilter");
+            devopsFilter.addEventListener("change", function () {
+                const url = new URL(window.location.href);
+                if (devopsFilter.checked) {
+                    url.searchParams.set("assignedToDevOps", "true");
+                } else {
+                    url.searchParams.delete("assignedToDevOps");
+                }
+                window.location.href = url.toString();
             });
         });
     </script>
