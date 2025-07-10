@@ -58,7 +58,7 @@
                     <th class="px-4 py-3">Kategorie</th>
                     <th class="px-4 py-3 cursor-pointer sort-header" data-sort="date">Erstellt am:</th>
                     <th class="px-4 py-2">Erstellt von</th>
-
+                    <th class="px-4 py-2">Zugewiesener</th>
                     <th class="px-4 py-3">Aktionen</th>
                 </tr>
             </thead>
@@ -81,8 +81,23 @@
                             <td class="px-4 py-2">@ticket.Status</td>
                             <td class="px-4 py-2">@ticket.Category?.Titel</td>
                             <td class="px-4 py-2">@ticket.CreatedAt.ToShortDateString()</td>
-                                <td class="px-4 py-2">@ticket.Creator?.Email</td>
-
+                            <td class="px-4 py-2">@ticket.Creator?.Email</td>
+                            <td class="px-4 py-2">
+                                @if (ticket.Zugewiesener != null)
+                                {
+                                    <div>
+                                        <div class="font-medium text-blue-600 dark:text-blue-400">@ticket.Zugewiesener.Email</div>
+                                        @if (ticket.ZugewiesenAm != null && ticket.ZugewiesenAm != DateTime.MinValue)
+                                        {
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">@ticket.ZugewiesenAm?.ToShortDateString()</div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-gray-400 dark:text-gray-500 text-sm">Nicht zugewiesen</span>
+                                }
+                            </td>
                             <td class="px-4 py-2 flex gap-3 items-center">
                                 <a asp-action="Details" asp-route-id="@ticket.Id" class="text-blue-600 hover:text-blue-800" title="Details">
                                     <i data-lucide="eye" class="w-5 h-5"></i>

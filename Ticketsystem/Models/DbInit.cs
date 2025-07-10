@@ -25,53 +25,24 @@ namespace Ticketsystem.Models
                     await userManager.AddToRoleAsync(admin, "Admin");
             }
 
+            // Developer-Benutzer
+            var developerEmail = "devops@demo.de";
+            if (await userManager.FindByEmailAsync(developerEmail) == null)
+            {
+                var developer = new ApplicationUser { UserName = developerEmail, Email = developerEmail };
+                var result = await userManager.CreateAsync(developer, "Developer123!");
+                if (result.Succeeded)
+                    await userManager.AddToRoleAsync(developer, "Developer");
+            }
+
             // Standard-User
-            var userEmail = "user@demo.de";
+            var userEmail = "tester@demo.de";
             if (await userManager.FindByEmailAsync(userEmail) == null)
             {
                 var user = new ApplicationUser { UserName = userEmail, Email = userEmail };
                 var result = await userManager.CreateAsync(user, "User123!");
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(user, "User");
-            }
-
-            // Mo
-            var userMoEmail = "mo@demo.de";
-            if (await userManager.FindByEmailAsync(userMoEmail) == null)
-            {
-                var userMo = new ApplicationUser { UserName = userMoEmail, Email = userMoEmail };
-                var result = await userManager.CreateAsync(userMo, "Mo123!");
-                if (result.Succeeded)
-                    await userManager.AddToRoleAsync(userMo, "User");
-            }
-            // Eduard
-            var userEduardEmail = "eduard@demo.de";
-            if (await userManager.FindByEmailAsync(userEduardEmail) == null)
-            {
-                var userEduard = new ApplicationUser { UserName = userEduardEmail, Email = userEduardEmail };
-                var result = await userManager.CreateAsync(userEduard, "Eduard123!");
-                if (result.Succeeded)
-                    await userManager.AddToRoleAsync(userEduard, "User");
-            }
-
-            // Suat
-            var userSuatEmail = "suat@demo.de";
-            if (await userManager.FindByEmailAsync(userSuatEmail) == null)
-            {
-                var userSuat = new ApplicationUser { UserName = userSuatEmail, Email = userSuatEmail };
-                var result = await userManager.CreateAsync(userSuat, "Suat123!");
-                if (result.Succeeded)
-                    await userManager.AddToRoleAsync(userSuat, "User");
-            }
-
-            // Ahmad
-            var userAhmadEmail = "ahmad@demo.de";
-            if (await userManager.FindByEmailAsync(userAhmadEmail) == null)
-            {
-                var userAhmad = new ApplicationUser { UserName = userAhmadEmail, Email = userAhmadEmail };
-                var result = await userManager.CreateAsync(userAhmad, "Ahmad123!");
-                if (result.Succeeded)
-                    await userManager.AddToRoleAsync(userAhmad, "User");
             }
         }
 

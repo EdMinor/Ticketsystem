@@ -28,7 +28,8 @@ namespace Ticketsystem.Controllers
         {
             IQueryable<Ticket> ticketsQuery = _context.Tickets
                 .Include(t => t.Creator)
-                .Include(t => t.Category);
+                .Include(t => t.Category)
+                .Include(t => t.Zugewiesener);
 
             if (!string.IsNullOrEmpty(status))
                 ticketsQuery = ticketsQuery.Where(t => t.Status == status);
@@ -148,12 +149,62 @@ namespace Ticketsystem.Controllers
             var ticket = await _context.Tickets
                 .Include(t => t.Creator)
                 .Include(t => t.Category)
+                .Include(t => t.Zugewiesener)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (ticket == null)
                 return NotFound();
 
+            // Получаем список разработчиков для формы назначения
+            if (User.IsInRole("Admin"))
+            {
+                ViewBag.Developers = await _userManager.GetUsersInRoleAsync("Developer");
+            }
+
             return View(ticket);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignDeveloper(int ticketId, string developerId)
+        {
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+            if (ticket == null) return NotFound();
+
+            var developer = await _userManager.FindByIdAsync(developerId);
+            if (developer == null) return NotFound();
+
+            ticket.ZugewiesenerId = developerId;
+            ticket.ZugewiesenAm = DateTime.Now;
+
+            _context.Tickets.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = ticketId });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Developer")]
+        public async Task<IActionResult> TakeOverCase(int ticketId)
+        {
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+            if (ticket == null) return NotFound();
+
+            var currentUserId = _userManager.GetUserId(User);
+            ticket.ZugewiesenerId = currentUserId;
+            ticket.ZugewiesenAm = DateTime.Now;
+
+            _context.Tickets.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = ticketId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDevelopers()
+        {
+            var developers = await _userManager.GetUsersInRoleAsync("Developer");
+            return Json(developers.Select(d => new { id = d.Id, name = d.UserName }));
         }
     }
 }

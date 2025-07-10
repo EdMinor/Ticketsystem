@@ -22,8 +22,10 @@ namespace Ticketsystem.Models
         public int? CategoryId { get; set; }
         public virtual Category? Category { get; set; }
 
-        public string? DeveloperId { get; set; } = null;
-        public virtual ApplicationUser? Developer { get; set; }
+        public string? ZugewiesenerId { get; set; } = null;
+        public virtual ApplicationUser? Zugewiesener { get; set; }
+
+        public DateTime? ZugewiesenAm { get; set; } = null;
 
         public string? CreatorId { get; set; } = null;
 

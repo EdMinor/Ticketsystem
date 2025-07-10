@@ -5,7 +5,44 @@
 
 <div class="max-w-md mx-auto mt-10 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
     <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">Login</h2>
-
+<!-- Demo logins button -->
+    <button id="showDemoLoginsBtn" class="fixed left-0 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-2 rounded-r-lg shadow-lg z-40 transition-all duration-300 hover:px-4">
+        Demo-Logins
+    </button>
+    <!-- Demo logins block -->
+    <div id="demoLoginsBlock" class="fixed left-0 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 rounded-r-lg shadow-lg p-4 w-80 z-50 transform transition-all duration-500 -translate-x-full border border-gray-200 dark:border-gray-700">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white">Demo-Logins</h2>
+            <button id="closeDemoLoginsBtn" class="text-gray-400 hover:text-gray-700 dark:hover:text-white text-xl font-bold">&times;</button>
+        </div>
+        <table class="w-full text-sm mb-2">
+            <thead>
+                <tr class="text-left text-gray-700 dark:text-gray-200">
+                    <th class="py-1">E-Mail</th>
+                    <th class="py-1">Passwort</th>
+                    <th class="py-1">Rolle</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-t border-gray-200 dark:border-gray-700">
+                    <td class="py-1">admin@demo.de</td>
+                    <td class="py-1">Admin123!</td>
+                    <td class="py-1">Admin</td>
+                </tr>
+                <tr class="border-t border-gray-200 dark:border-gray-700">
+                    <td class="py-1">devops@demo.de</td>
+                    <td class="py-1">Developer123!</td>
+                    <td class="py-1">Developer</td>
+                </tr>
+                <tr class="border-t border-gray-200 dark:border-gray-700">
+                    <td class="py-1">tester@demo.de</td>
+                    <td class="py-1">User123!</td>
+                    <td class="py-1">User</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-xs text-gray-500 dark:text-gray-400">Nur für Testzwecke!</div>
+    </div>
     <form asp-action="Login" method="post" class="space-y-4">
         <div>
             <label asp-for="Email" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"></label>
@@ -29,3 +66,24 @@
         </button>
     </form>
 </div>
+<script>
+    const showBtn = document.getElementById('showDemoLoginsBtn');
+    const block = document.getElementById('demoLoginsBlock');
+    const closeBtn = document.getElementById('closeDemoLoginsBtn');
+    
+    if (showBtn && block && closeBtn) {
+        showBtn.addEventListener('click', () => {
+            showBtn.style.display = 'none'; // Скрываем кнопку
+            block.classList.remove('-translate-x-full');
+            block.classList.add('translate-x-0');
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            block.classList.remove('translate-x-0');
+            block.classList.add('-translate-x-full');
+            setTimeout(() => {
+                showBtn.style.display = 'block'; // Показываем кнопку обратно
+            }, 500);
+        });
+    }
+</script>
