@@ -181,11 +181,19 @@ namespace Ticketsystem.Controllers
             var ticket = await _context.Tickets.FindAsync(ticketId);
             if (ticket == null) return NotFound();
 
-            var developer = await _userManager.FindByIdAsync(developerId);
-            if (developer == null) return NotFound();
-
-            ticket.ZugewiesenerId = developerId;
-            ticket.ZugewiesenAm = DateTime.Now;
+            // Wenn kein Developer ausgewählt wurde, Zuweisung entfernen
+            if (string.IsNullOrEmpty(developerId))
+            {
+                ticket.ZugewiesenerId = null;
+                ticket.ZugewiesenAm = null;
+            }
+            else
+            {
+                var developer = await _userManager.FindByIdAsync(developerId);
+                if (developer == null) return NotFound();
+                ticket.ZugewiesenerId = developerId;
+                ticket.ZugewiesenAm = DateTime.Now;
+            }
 
             _context.Tickets.Update(ticket);
             await _context.SaveChangesAsync();
@@ -203,7 +211,49 @@ namespace Ticketsystem.Controllers
             var currentUserId = _userManager.GetUserId(User);
             ticket.ZugewiesenerId = currentUserId;
             ticket.ZugewiesenAm = DateTime.Now;
+            ticket.Status = "In Bearbeitung"; // Status auf 'In Bearbeitung' setzen
 
+            _context.Tickets.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = ticketId });
+        }
+
+        // Fall schließen durch Developer
+        [HttpPost]
+        [Authorize(Roles = "Developer")]
+        public async Task<IActionResult> CloseCase(int ticketId)
+        {
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+            if (ticket == null) return NotFound();
+
+            var currentUserId = _userManager.GetUserId(User);
+            // Nur der zugewiesene Developer darf schließen
+            if (ticket.ZugewiesenerId != currentUserId)
+                return Forbid();
+
+            ticket.Status = "Geschlossen"; // Status auf 'Geschlossen' setzen
+            _context.Tickets.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = ticketId });
+        }
+
+        // Fall wieder eröffnen durch Admin oder Ersteller
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ReopenCase(int ticketId)
+        {
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+            if (ticket == null) return NotFound();
+
+            var currentUserId = _userManager.GetUserId(User);
+            // Nur Admin oder Ersteller darf wieder eröffnen
+            if (!User.IsInRole("Admin") && ticket.CreatorId != currentUserId)
+                return Forbid();
+
+            ticket.Status = "Offen"; // Status auf 'Offen' setzen
+            ticket.CreatedAt = DateTime.Now; // Datum aktualisieren
             _context.Tickets.Update(ticket);
             await _context.SaveChangesAsync();
 

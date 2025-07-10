@@ -52,7 +52,7 @@
         }
 
         <div>
-            <p class="font-semibold text-gray-500 dark:text-gray-400">Zugewiesener</p>
+            <p class="font-semibold text-gray-500 dark:text-gray-400">Zugewiesener Bearbeiter</p>
             @if (Model.Zugewiesener != null)
             {
                 <div>
@@ -80,8 +80,35 @@
             </div>
     }
 
-    <!-- Кнопка "Fall übernehmen" для разработчиков -->
-    @if (User.IsInRole("Developer") && Model.Zugewiesener == null)
+    <!-- Fall schließen für Developer -->
+    @if (User.IsInRole("Developer") && Model.Status != "Geschlossen" && Model.ZugewiesenerId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+    {
+        <div class="flex justify-center pt-4">
+            <form asp-action="CloseCase" method="post" style="display: inline;">
+                <input type="hidden" name="ticketId" value="@Model.Id" />
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                    <i data-lucide="lock" class="w-5 h-5"></i>
+                    Fall schließen
+                </button>
+            </form>
+        </div>
+    }
+    <!-- Fall wieder eröffnen für Admin und Ersteller -->
+    @if (Model.Status == "Geschlossen" && (User.IsInRole("Admin") || Model.CreatorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value))
+    {
+        <div class="flex justify-center pt-4">
+            <form asp-action="ReopenCase" method="post" style="display: inline;">
+                <input type="hidden" name="ticketId" value="@Model.Id" />
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                    <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
+                    Fall wieder eröffnen
+                </button>
+            </form>
+        </div>
+    }
+
+    <!-- Fall übernehmen für Developer, wenn noch nicht zugewiesen und nicht ersteller und nicht geschlossen-->
+    @if (User.IsInRole("Developer") && Model.Zugewiesener == null && Model.Status != "Geschlossen" && Model.CreatorId != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
     {
         <div class="flex justify-center pt-4">
             <form asp-action="TakeOverCase" method="post" style="display: inline;">
@@ -104,7 +131,7 @@
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Entwickler auswählen</label>
                     <select name="developerId" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Entwickler auswählen...</option>
+                        <option value="">(Kein Developer zugewiesen)</option>
                         @foreach (var developer in ViewBag.Developers ?? new List<ApplicationUser>())
                         {
                             @if (Model.ZugewiesenerId == developer.Id)
