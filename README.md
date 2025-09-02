@@ -1,76 +1,10 @@
 README — Ticketsystem
 
-Краткое описание
----------------
-Ticketsystem — веб-приложение на ASP.NET Core 8 с Identity и SQLite в качестве хранилища. В проекте используются Tailwind CSS (через CLI) и сторонние фронтенд-библиотеки (Flowbite, Simple Datatables).
-
-Ключевые сведения
-------------------
-- Проект: ASP.NET Core (целевой фреймворк `net8.0`).
-- БД: SQLite — файл `ticketsystem.db` (настройка в `appsettings.json`, строка подключения `TicketSystemDatenbankVerbindung`).
-- Identity: используется `ApplicationUser` и миграции EF Core; при старте приложение автоматически применяет миграции и выполняет сидирование (файлы `Migrations/` и `Models/DbInit.cs`).
-- Файлы фронтенда: в `package.json` указаны `tailwindcss`, `@tailwindcss/cli`, `flowbite`, `simple-datatables`. Скриптов `npm run` в `package.json` нет.
-
-Требования
-----------
-- .NET SDK 8.x установлен и доступен в PATH (проверьте `dotnet --version`).
-- Node.js и npm (для сборки CSS/фронтенда) — опционально, если вы будете генерировать Tailwind CSS.
-
-Быстрый запуск (локально)
-------------------------
-1. Откройте PowerShell в корне репозитория и выполните (устраняет отсутствие зависимостей):
-
-```powershell
-cd C:\Users\EdMin\Ticketsystem\Ticketsystem
-dotnet restore
-```
-
-2. Построить проект и запустить:
-
-```powershell
-dotnet build
-dotnet run
-```
-
-По умолчанию приложение выполнит миграции при старте и создаст (если нужно) `ticketsystem.db` в каталоге проекта. После старта в консоли будет URL для доступа (обычно https://localhost:5001 и http://localhost:5000).
-
-Дополнительно: ручная работа с миграциями
----------------------------------------
-Если вы хотите управлять миграциями вручную:
-
-```powershell
-cd C:\Users\EdMin\Ticketsystem\Ticketsystem
-dotnet ef database update
-```
-
-(Требуется установка инструментов EF Core, если их нет: `dotnet tool install --global dotnet-ef` и пакет `Microsoft.EntityFrameworkCore.Tools` — уже указан в `.csproj`.)
-
-Фронтенд: Tailwind CSS и статические ассеты
------------------------------------------
-Файл `package.json` содержит зависимости, но не скрипты. Если нужно генерировать CSS с Tailwind, выполните:
-
-```powershell
-cd C:\Users\EdMin\Ticketsystem\Ticketsystem
-npm install
-# Пример команды для генерации CSS — проверьте реальные пути к входному/выходному CSS в проекте
-npx tailwindcss -i ./wwwroot/css/input.css -o ./wwwroot/css/output.css --watch
-```
-
-Если в проекте отсутствует `tailwind.config.js` или `input.css`, создайте их согласно документации Tailwind.
-
-Учётные записи по умолчанию
--------------------------
-В `Program.cs` есть комментарии с примерными быстрыми пользователями/ролями (например, `admin@demo.de` / `admin123!`). Приложение при первом запуске выполняет сидирование ролей/пользователей (функция `DbInit.SeedRolesAndUsersAsync`).
-
-Отладка и полезные команды
---------------------------
-- Проверить версию .NET:
-
-README — Ticketsystem
-
 Kurzbeschreibung
 -----------------
 Ticketsystem ist eine Webanwendung auf Basis von ASP.NET Core 8 mit Identity und SQLite als Datenbank. Für das Frontend werden Tailwind CSS (CLI) sowie die Bibliotheken Flowbite und Simple Datatables verwendet.
+
+Die Anwendung wurde im Rahmen einer Projektarbeit zum Abschluss des Moduls "C#" entwickelt. An der Entwicklung waren beteiligt: Mo, Suat, Ahmed, Eduard.
 
 Wesentliche Informationen
 ------------------------
